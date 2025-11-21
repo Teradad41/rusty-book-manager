@@ -70,7 +70,7 @@ mod tests {
     use super::*;
 
     #[sqlx::test]
-    async fn test_register_book(pool: sqlx::PgPool) -> anyhow::Result<()> {
+    async fn test_register_book(pool: sqlx::PgPool) -> Result<()> {
         let repo = BookRepositoryImpl::new(ConnectionPool::new(pool));
         let book = CreateBook {
             title: "Test Title".into(),
