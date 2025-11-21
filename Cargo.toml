@@ -29,6 +29,9 @@ sqlx = { version = "0.8.6", features = ["runtime-tokio", "uuid", "chrono", "macr
 tokio = { version = "1.37.0", features = ["full"] }
 async-trait = "0.1.89"
 derive-new = "0.7.0"
+uuid = { version = "1.18.1", features = ["v4", "serde"] }
+serde = { version = "1.0.228", features = ["derive"] }
+thiserror = "2.0.17"
 rstest = "0.18.2"
 
 [package.metadata.cargo-machete]
