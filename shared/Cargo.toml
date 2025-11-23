@@ -5,3 +5,13 @@ edition.workspace = true
 
 [dependencies]
 anyhow.workspace = true
+axum.workspace = true
+sqlx.workspace = true
+thiserror.workspace = true
+secrecy.workspace = true
+uuid.workspace = true
+strum.workspace = true
+redis.workspace = true
+bcrypt.workspace = true
+garde.workspace = true
+tracing.workspace = true

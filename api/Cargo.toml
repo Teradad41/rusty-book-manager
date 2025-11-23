@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+shared.workspace = true
 kernel.workspace = true
 registry.workspace = true
 axum.workspace = true
