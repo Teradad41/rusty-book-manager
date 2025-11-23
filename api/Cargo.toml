@@ -9,6 +9,4 @@ kernel.workspace = true
 registry.workspace = true
 axum.workspace = true
 serde.workspace = true
-anyhow.workspace = true
 uuid.workspace = true
-thiserror.workspace = true

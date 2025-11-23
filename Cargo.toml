@@ -56,8 +56,6 @@ sqlx.workspace = true
 tokio.workspace = true
 async-trait.workspace = true
 derive-new.workspace = true
-strum.workspace = true
 tracing.workspace = true
 tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
 tower-http.workspace = true
-garde.workspace = true
