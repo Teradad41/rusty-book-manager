@@ -7,3 +7,5 @@ edition = "2024"
 shared.workspace = true
 async-trait.workspace = true
 uuid.workspace = true
+serde.workspace = true
+sqlx.workspace = true

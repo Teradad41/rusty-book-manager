@@ -10,6 +10,3 @@ async-trait.workspace = true
 sqlx.workspace = true
 derive-new.workspace = true
 uuid.workspace = true
-
-[package.metadata.cargo-machete]
-ignored = ["shared"]
