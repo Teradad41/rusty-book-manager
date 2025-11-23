@@ -44,15 +44,11 @@ secrecy = "0.10.3"
 [dependencies]
 adapter.workspace = true
 api.workspace = true
-kernel.workspace = true
 shared.workspace = true
 registry.workspace = true
 anyhow.workspace = true
 axum.workspace = true
-sqlx.workspace = true
 tokio.workspace = true
-async-trait.workspace = true
-derive-new.workspace = true
 tracing.workspace = true
 tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
 tower-http.workspace = true
