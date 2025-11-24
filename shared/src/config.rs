@@ -10,6 +10,8 @@ pub struct DatabaseConfig {
 
 pub struct AppConfig {
     pub database: DatabaseConfig,
+    pub redis: RedisConfig,
+    pub auth: AuthConfig,
 }
 
 impl AppConfig {
@@ -21,7 +23,27 @@ impl AppConfig {
             password: std::env::var("DATABASE_PASSWORD")?,
             database: std::env::var("DATABASE_NAME")?,
         };
+        let redis = RedisConfig {
+            host: std::env::var("REDIS_HOST")?,
+            port: std::env::var("REDIS_PORT")?.parse::<u16>()?,
+        };
+        let auth = AuthConfig {
+            ttl: std::env::var("AUTH_TOKEN_TTL")?.parse::<u64>()?,
+        };
 
-        Ok(Self { database })
+        Ok(Self {
+            database,
+            redis,
+            auth,
+        })
     }
+}
+
+pub struct RedisConfig {
+    pub host: String,
+    pub port: u16,
+}
+
+pub struct AuthConfig {
+    pub ttl: u64,
 }
