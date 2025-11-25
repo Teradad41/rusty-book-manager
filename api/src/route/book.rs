@@ -10,7 +10,7 @@ pub fn build_book_routes() -> Router<AppRegistry> {
     let routers = Router::new()
         .route("/", post(register_book))
         .route("/", get(show_book_list))
-        .route("/:book_id", get(show_book));
+        .route("/{book_id}", get(show_book));
 
     Router::new().nest("/books", routers)
 }

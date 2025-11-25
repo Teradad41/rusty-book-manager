@@ -10,3 +10,5 @@ registry.workspace = true
 axum.workspace = true
 serde.workspace = true
 uuid.workspace = true
+axum-extra.workspace = true
+async-trait.workspace = true

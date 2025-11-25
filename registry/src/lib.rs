@@ -5,10 +5,11 @@ use adapter::{
     redis::RedisClient,
     repository::{
         auth::AuthRepositoryImpl, book::BookRepositoryImpl, health::HealthCheckRepositoryImpl,
+        user::UserRepositoryImpl,
     },
 };
 use kernel::repository::{
-    auth::AuthRepository, book::BookRepository, health::HealthCheckRepository,
+    auth::AuthRepository, book::BookRepository, health::HealthCheckRepository, user::UserRepository,
 };
 use shared::config::AppConfig;
 
@@ -17,18 +18,25 @@ pub struct AppRegistry {
     health_check_repository: Arc<dyn HealthCheckRepository>,
     book_repository: Arc<dyn BookRepository>,
     auth_repository: Arc<dyn AuthRepository>,
+    user_repository: Arc<dyn UserRepository>,
 }
 
 impl AppRegistry {
     pub fn new(pool: ConnectionPool, redis: Arc<RedisClient>, app_config: AppConfig) -> Self {
         let health_check_repository = Arc::new(HealthCheckRepositoryImpl::new(pool.clone()));
         let book_repository = Arc::new(BookRepositoryImpl::new(pool.clone()));
-        let auth_repository = Arc::new(AuthRepositoryImpl::new(pool, redis, app_config.auth.ttl));
+        let auth_repository = Arc::new(AuthRepositoryImpl::new(
+            pool.clone(),
+            redis,
+            app_config.auth.ttl,
+        ));
+        let user_repository = Arc::new(UserRepositoryImpl::new(pool.clone()));
 
         Self {
             health_check_repository,
             book_repository,
             auth_repository,
+            user_repository,
         }
     }
 
@@ -42,5 +50,9 @@ impl AppRegistry {
 
     pub fn auth_repository(&self) -> Arc<dyn AuthRepository> {
         self.auth_repository.clone()
+    }
+
+    pub fn user_repository(&self) -> Arc<dyn UserRepository> {
+        self.user_repository.clone()
     }
 }

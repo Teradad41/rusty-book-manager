@@ -9,3 +9,4 @@ async-trait.workspace = true
 uuid.workspace = true
 serde.workspace = true
 sqlx.workspace = true
+strum.workspace = true
