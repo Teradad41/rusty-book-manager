@@ -23,13 +23,13 @@ AND NOT EXISTS (
 );
 
 -- 一般ユーザー（User権限）
--- パスワードは全て "password123" をハッシュ化したもの
+-- パスワードは全て "password" をハッシュ化したもの
 INSERT INTO
     users (name, email, password_hash, role_id)
 SELECT
     u.name,
     u.email,
-    '$2b$12$luRkd0.boAmPusBdZlOyNuiIr3uXr2Cwgd4lqIzpJ2a.Wyqo/IKCi',
+    '$2b$12$iYdrAppBeV3LrFcvxRTyoejF0WpMBnyzGETexeb5XKmKHEax1RTjK',
     role_id
 FROM
     (VALUES
