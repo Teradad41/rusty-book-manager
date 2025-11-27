@@ -72,7 +72,7 @@ impl From<BookCheckoutRow> for Checkout {
                 id: user_id,
                 name: user_name,
             },
-            checked_out_at
+            checked_out_at,
         }
     }
 }

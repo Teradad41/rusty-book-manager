@@ -16,7 +16,6 @@ use crate::{
     },
 };
 
-
 #[utoipa::path(
     post,
     path = "/books",
