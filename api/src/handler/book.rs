@@ -16,6 +16,22 @@ use crate::{
     },
 };
 
+
+#[utoipa::path(
+    post,
+    path = "/books",
+    tag = "蔵書",
+    request_body = CreateBookRequest,
+    responses(
+        (status = 201, description = "蔵書の登録成功"),
+        (status = 400, description = "リクエストパラメータ不正"),
+        (status = 401, description = "認証エラー"),
+        (status = 422, description = "リクエストした蔵書の登録に失敗した場合"),
+    ),
+    security(
+        ("bearer_auth" = [])
+    )
+)]
 pub async fn register_book(
     user: AuthorizedUser,
     State(registry): State<AppRegistry>,
@@ -28,6 +44,17 @@ pub async fn register_book(
         .map(|_| StatusCode::CREATED)
 }
 
+#[utoipa::path(
+    get,
+    path = "/books",
+    tag = "蔵書",
+    params(
+        BookListQuery
+    ),
+    responses(
+        (status = 200, description = "蔵書一覧の取得成功", body = PaginatedBookResponse),
+    )
+)]
 pub async fn show_book_list(
     _user: AuthorizedUser,
     Query(query): Query<BookListQuery>,
@@ -43,6 +70,18 @@ pub async fn show_book_list(
         .map(Json)
 }
 
+#[utoipa::path(
+    get,
+    path = "/books/{book_id}",
+    tag = "蔵書",
+    params(
+        ("book_id" = String, Path, description = "蔵書ID")
+    ),
+    responses(
+        (status = 200, description = "蔵書詳細の取得成功", body = BookResponse),
+        (status = 404, description = "蔵書が存在しない"),
+    )
+)]
 pub async fn show_book(
     _user: AuthorizedUser,
     Path(book_id): Path<BookId>,
@@ -58,6 +97,24 @@ pub async fn show_book(
         })
 }
 
+#[utoipa::path(
+    put,
+    path = "/books/{book_id}",
+    tag = "蔵書",
+    params(
+        ("book_id" = String, Path, description = "蔵書ID")
+    ),
+    request_body = UpdateBookRequest,
+    responses(
+        (status = 204, description = "蔵書の更新成功"),
+        (status = 400, description = "リクエストパラメータ不正"),
+        (status = 401, description = "認証エラー"),
+        (status = 404, description = "蔵書が存在しない"),
+    ),
+    security(
+        ("bearer_auth" = [])
+    )
+)]
 pub async fn update_book(
     user: AuthorizedUser,
     Path(book_id): Path<BookId>,
@@ -75,6 +132,22 @@ pub async fn update_book(
         .map(|_| StatusCode::NO_CONTENT)
 }
 
+#[utoipa::path(
+    delete,
+    path = "/books/{book_id}",
+    tag = "蔵書",
+    params(
+        ("book_id" = String, Path, description = "蔵書ID")
+    ),
+    responses(
+        (status = 204, description = "蔵書の削除成功"),
+        (status = 401, description = "認証エラー"),
+        (status = 404, description = "蔵書が存在しない"),
+    ),
+    security(
+        ("bearer_auth" = [])
+    )
+)]
 pub async fn delete_book(
     user: AuthorizedUser,
     Path(book_id): Path<BookId>,

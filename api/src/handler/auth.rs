@@ -8,6 +8,17 @@ use crate::{
     model::auth::{AccessTokenResponse, LoginRequest},
 };
 
+#[utoipa::path(
+    post,
+    path = "/auth/login",
+    tag = "認証",
+    request_body = LoginRequest,
+    responses(
+        (status = 200, description = "ログイン成功", body = AccessTokenResponse),
+        (status = 401, description = "認証エラー"),
+        (status = 500, description = "サーバーエラー"),
+    )
+)]
 pub async fn login(
     State(registry): State<AppRegistry>,
     Json(req): Json<LoginRequest>,
@@ -28,6 +39,18 @@ pub async fn login(
     }))
 }
 
+#[utoipa::path(
+    post,
+    path = "/auth/logout",
+    tag = "認証",
+    responses(
+        (status = 204, description = "ログアウト成功"),
+        (status = 401, description = "認証エラー"),
+    ),
+    security(
+        ("bearer_auth" = ["Bearer {access_token}"])
+    )
+)]
 pub async fn logout(
     user: AuthorizedUser,
     State(registry): State<AppRegistry>,

@@ -1,6 +1,7 @@
 use kernel::model::{
     checkout::{Checkout, CheckoutBook},
     id::{BookId, CheckoutId, UserId},
+    user::CheckoutUser,
 };
 use sqlx::types::chrono::{DateTime, Utc};
 
@@ -19,6 +20,7 @@ pub struct CheckoutRow {
     pub checkout_id: CheckoutId,
     pub book_id: BookId,
     pub user_id: UserId,
+    pub user_name: String,
     pub checked_out_at: DateTime<Utc>,
     pub title: String,
     pub author: String,
@@ -31,6 +33,7 @@ impl From<CheckoutRow> for Checkout {
             checkout_id,
             book_id,
             user_id,
+            user_name,
             checked_out_at,
             title,
             author,
@@ -38,7 +41,10 @@ impl From<CheckoutRow> for Checkout {
         } = value;
         Checkout {
             id: checkout_id,
-            checked_out_by: user_id,
+            checked_out_by: CheckoutUser {
+                id: user_id,
+                name: user_name,
+            },
             checked_out_at,
             // 未返却なので、returned_at は None を入れる
             returned_at: None,
@@ -57,6 +63,7 @@ pub struct ReturnedCheckoutRow {
     pub checkout_id: CheckoutId,
     pub book_id: BookId,
     pub user_id: UserId,
+    pub user_name: String,
     pub checked_out_at: DateTime<Utc>,
     pub returned_at: DateTime<Utc>,
     pub title: String,
@@ -70,6 +77,7 @@ impl From<ReturnedCheckoutRow> for Checkout {
             checkout_id,
             book_id,
             user_id,
+            user_name,
             checked_out_at,
             returned_at,
             title,
@@ -78,7 +86,10 @@ impl From<ReturnedCheckoutRow> for Checkout {
         } = value;
         Checkout {
             id: checkout_id,
-            checked_out_by: user_id,
+            checked_out_by: CheckoutUser {
+                id: user_id,
+                name: user_name,
+            },
             checked_out_at,
             // 返却済みなので returned_at には日時データが入る
             returned_at: Some(returned_at),

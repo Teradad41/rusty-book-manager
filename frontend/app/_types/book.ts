@@ -33,9 +33,8 @@ export type PaginatedList<T> = {
 
 export type Checkout = {
   id: string;
-  checkedOutBy: string;
+  checkedOutBy: CheckoutUser;
   checkedOutAt: string;
   returnedAt?: string;
   book: Book;
 };
-

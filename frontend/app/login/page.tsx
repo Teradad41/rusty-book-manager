@@ -16,9 +16,13 @@ import {
   Alert,
   AlertIcon,
   AlertDescription,
+  Icon,
+  VStack,
+  Container,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import { FiBook } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import { ACCESS_TOKEN_KEY } from "../_components/auth";
 import useLocalStorageState from "use-local-storage-state";
@@ -54,90 +58,126 @@ export default function Login() {
     }
   };
 
+  const bgGradient = useColorModeValue(
+    "linear(to-br, blue.50, purple.50)",
+    "linear(to-br, gray.900, gray.800)"
+  );
+
   return (
     <Flex
-      minH={"100vh"}
-      align={"center"}
-      justify={"center"}
-      bg={useColorModeValue("gray.50", "gray.800")}
+      minH="100vh"
+      align="center"
+      justify="center"
+      bgGradient={bgGradient}
     >
-      <Stack spacing={8} mx={"auto"} minW={"lg"} maxW={"lg"} py={12} px={6}>
-        <Stack align={"center"}>
-          <Heading fontSize={"4xl"} textAlign={"center"}>
-            ログイン
-          </Heading>
-          <Text fontSize={"lg"} color={"gray.600"}>
-            Rusty Book Manager にようこそ！📚
-          </Text>
-        </Stack>
-        <Box
-          rounded={"lg"}
-          bg={useColorModeValue("white", "gray.700")}
-          boxShadow={"lg"}
-          p={8}
-        >
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <Stack spacing={4}>
-              {error && (
-                <Alert status="error">
-                  <AlertIcon />
-                  <AlertDescription>{error}</AlertDescription>
-                </Alert>
-              )}
-              <FormControl
-                id="email"
-                isInvalid={errors.email ? true : false}
-                isRequired
-              >
-                <FormLabel htmlFor="email">メールアドレス</FormLabel>
-                <Input
-                  type="email"
-                  {...register("email", { required: true })}
-                />
-              </FormControl>
-              <FormControl
-                id="password"
-                isInvalid={errors.password ? true : false}
-                isRequired
-              >
-                <FormLabel htmlFor="password">パスワード</FormLabel>
-                <InputGroup>
+      <Container maxW="md">
+        <VStack spacing={8} py={12}>
+          <VStack spacing={4} textAlign="center">
+            <Box
+              bg={useColorModeValue("blue.500", "blue.600")}
+              p={4}
+              borderRadius="2xl"
+              boxShadow="lg"
+            >
+              <Icon as={FiBook} boxSize={12} color="white" />
+            </Box>
+            <Heading
+              fontSize="4xl"
+              bgGradient="linear(to-r, blue.500, purple.500)"
+              bgClip="text"
+            >
+              ログイン
+            </Heading>
+            <Text fontSize="lg" color="gray.600">
+              Rusty Book Manager にようこそ！📚
+            </Text>
+          </VStack>
+
+          <Box
+            w="full"
+            bg={useColorModeValue("white", "gray.700")}
+            boxShadow="2xl"
+            borderRadius="2xl"
+            p={8}
+            borderWidth="1px"
+            borderColor={useColorModeValue("gray.200", "gray.600")}
+          >
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <Stack spacing={6}>
+                {error && (
+                  <Alert status="error" borderRadius="lg">
+                    <AlertIcon />
+                    <AlertDescription>{error}</AlertDescription>
+                  </Alert>
+                )}
+
+                <FormControl
+                  id="email"
+                  isInvalid={errors.email ? true : false}
+                  isRequired
+                >
+                  <FormLabel fontWeight="semibold">メールアドレス</FormLabel>
                   <Input
-                    type={showPassword ? "text" : "password"}
-                    {...register("password", { required: true })}
+                    type="email"
+                    size="lg"
+                    borderRadius="lg"
+                    focusBorderColor="blue.500"
+                    {...register("email", { required: true })}
                   />
-                  <InputRightElement h={"full"}>
-                    <Button
-                      variant={"ghost"}
-                      onClick={() =>
-                        setShowPassword((showPassword) => !showPassword)
-                      }
-                      type="submit"
-                    >
-                      {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                    </Button>
-                  </InputRightElement>
-                </InputGroup>
-              </FormControl>
-              <Stack spacing={10} pt={2}>
+                </FormControl>
+
+                <FormControl
+                  id="password"
+                  isInvalid={errors.password ? true : false}
+                  isRequired
+                >
+                  <FormLabel fontWeight="semibold">パスワード</FormLabel>
+                  <InputGroup size="lg">
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      borderRadius="lg"
+                      focusBorderColor="blue.500"
+                      {...register("password", { required: true })}
+                    />
+                    <InputRightElement h="full">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() =>
+                          setShowPassword((showPassword) => !showPassword)
+                        }
+                      >
+                        {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                      </Button>
+                    </InputRightElement>
+                  </InputGroup>
+                </FormControl>
+
                 <Button
-                  loadingText="ログイン中..."
-                  size="lg"
-                  bg={"blue.400"}
-                  color={"white"}
-                  _hover={{
-                    bg: "blue.500",
-                  }}
                   type="submit"
+                  size="lg"
+                  bgGradient="linear(to-r, blue.500, purple.500)"
+                  color="white"
+                  _hover={{
+                    bgGradient: "linear(to-r, blue.600, purple.600)",
+                    transform: "translateY(-2px)",
+                    boxShadow: "lg",
+                  }}
+                  _active={{
+                    transform: "translateY(0)",
+                  }}
+                  transition="all 0.2s"
                   isLoading={isSubmitting}
+                  loadingText="ログイン中..."
+                  borderRadius="lg"
                 >
                   ログイン
                 </Button>
               </Stack>
-            </Stack>
-          </form>
-        </Box>
-      </Stack>
+            </form>
+          </Box>
+        </VStack>
+      </Container>
     </Flex>
   );
 }

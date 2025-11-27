@@ -1,28 +1,34 @@
+use chrono::{DateTime, Utc};
 use derive_new::new;
 use garde::Validate;
 use kernel::model::{
-    book::{Book, BookListOptions, UpdateBook, event::CreateBook},
-    id::{BookId, UserId},
+    book::{Book, BookListOptions, Checkout, UpdateBook, event::CreateBook},
+    id::{BookId, CheckoutId, UserId},
     list::PaginatedList,
 };
 use serde::{Deserialize, Serialize};
+use utoipa::{IntoParams, ToSchema};
 use uuid::Uuid;
 
-use crate::model::user::BookOwner;
+use crate::model::user::{BookOwner, CheckoutUser};
 
-#[derive(Debug, Deserialize, Validate)]
+#[derive(Debug, Deserialize, Validate, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct CreateBookRequest {
     #[garde(length(min = 1))]
+    #[schema(example = "The Rust Programming Language")]
     pub title: String,
 
     #[garde(length(min = 1))]
+    #[schema(example = "Steve Klabnik and Carol Nichols")]
     pub author: String,
 
     #[garde(length(min = 1))]
+    #[schema(example = "978-1593278281")]
     pub isbn: String,
 
     #[garde(skip)]
+    #[schema(example = "The official book on the Rust programming language")]
     pub description: String,
 }
 
@@ -44,7 +50,7 @@ impl From<CreateBookRequest> for CreateBook {
     }
 }
 
-#[derive(Debug, Deserialize, Validate)]
+#[derive(Debug, Deserialize, Validate, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct UpdateBookRequest {
     #[garde(length(min = 1))]
@@ -87,7 +93,7 @@ impl From<UpdateBookRequestWithIds> for UpdateBook {
     }
 }
 
-#[derive(Debug, Deserialize, Validate)]
+#[derive(Debug, Deserialize, Validate, IntoParams)]
 pub struct BookListQuery {
     #[garde(range(min = 0))]
     #[serde(default = "default_limit")]
@@ -110,15 +116,41 @@ impl From<BookListQuery> for BookListOptions {
     }
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
+#[serde(rename_all = "camelCase")]
+pub struct BookCheckoutResponse {
+    #[schema(value_type = String)]
+    pub id: CheckoutId,
+    pub checked_out_by: CheckoutUser,
+    pub checked_out_at: DateTime<Utc>,
+}
+
+impl From<Checkout> for BookCheckoutResponse {
+    fn from(value: Checkout) -> Self {
+        let Checkout {
+            checkout_id,
+            checked_out_by,
+            checked_out_at,
+        } = value;
+        Self {
+            id: checkout_id,
+            checked_out_by: checked_out_by.into(),
+            checked_out_at,
+        }
+    }
+}
+
+#[derive(Debug, Serialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct BookResponse {
+    #[schema(value_type = String)]
     pub id: Uuid,
     pub title: String,
     pub author: String,
     pub isbn: String,
     pub description: String,
     pub owner: BookOwner,
+    pub checkout: Option<BookCheckoutResponse>,
 }
 
 impl From<Book> for BookResponse {
@@ -130,6 +162,7 @@ impl From<Book> for BookResponse {
             isbn,
             description,
             owner,
+            checkout,
         } = value;
 
         Self {
@@ -139,11 +172,12 @@ impl From<Book> for BookResponse {
             isbn,
             description,
             owner: owner.into(),
+            checkout: checkout.map(BookCheckoutResponse::from),
         }
     }
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct PaginatedBookResponse {
     pub total: i64,

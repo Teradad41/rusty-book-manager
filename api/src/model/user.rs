@@ -10,8 +10,9 @@ use kernel::model::{
 };
 use serde::{Deserialize, Serialize};
 use strum::VariantNames;
+use utoipa::ToSchema;
 
-#[derive(Serialize, Deserialize, VariantNames)]
+#[derive(Serialize, Deserialize, VariantNames, ToSchema)]
 #[strum(serialize_all = "kebab-case")]
 pub enum RoleName {
     Admin,
@@ -36,22 +37,23 @@ impl From<RoleName> for Role {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct UsersResponse {
-    pub items: Vec<UserReponse>,
+    pub items: Vec<UserResponse>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct UserReponse {
+pub struct UserResponse {
+    #[schema(value_type = String)]
     pub id: UserId,
     pub name: String,
     pub email: String,
     pub role: RoleName,
 }
 
-impl From<User> for UserReponse {
+impl From<User> for UserResponse {
     fn from(value: User) -> Self {
         let User {
             id,
@@ -69,13 +71,13 @@ impl From<User> for UserReponse {
     }
 }
 
-#[derive(Deserialize, Validate)]
+#[derive(Deserialize, Validate, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct UpdateUserPasswordRequest {
     #[garde(length(min = 1))]
-    current_password: String,
+    pub current_password: String,
     #[garde(length(min = 1))]
-    new_password: String,
+    pub new_password: String,
 }
 
 #[derive(new)]
@@ -99,15 +101,15 @@ impl From<UpdateUserPasswordRequestWithUserId> for UpdateUserPassword {
     }
 }
 
-#[derive(Deserialize, Validate)]
+#[derive(Deserialize, Validate, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct CreateUserRequest {
     #[garde(length(min = 1))]
-    name: String,
+    pub name: String,
     #[garde(email)]
-    email: String,
+    pub email: String,
     #[garde(length(min = 1))]
-    password: String,
+    pub password: String,
 }
 
 impl From<CreateUserRequest> for CreateUser {
@@ -126,18 +128,18 @@ impl From<CreateUserRequest> for CreateUser {
     }
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct UpdateUserRoleReqeust {
-    role: RoleName,
+pub struct UpdateUserRoleRequest {
+    pub role: RoleName,
 }
 
 #[derive(new)]
-pub struct UpdateUserRoleRequestWithUserId(UserId, UpdateUserRoleReqeust);
+pub struct UpdateUserRoleRequestWithUserId(UserId, UpdateUserRoleRequest);
 
 impl From<UpdateUserRoleRequestWithUserId> for UpdateUserRole {
     fn from(value: UpdateUserRoleRequestWithUserId) -> Self {
-        let UpdateUserRoleRequestWithUserId(user_id, UpdateUserRoleReqeust { role }) = value;
+        let UpdateUserRoleRequestWithUserId(user_id, UpdateUserRoleRequest { role }) = value;
 
         Self {
             user_id,
@@ -146,9 +148,10 @@ impl From<UpdateUserRoleRequestWithUserId> for UpdateUserRole {
     }
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct BookOwner {
+    #[schema(value_type = String)]
     pub id: UserId,
     pub name: String,
 }
@@ -156,6 +159,21 @@ pub struct BookOwner {
 impl From<kernel::model::user::BookOwner> for BookOwner {
     fn from(value: kernel::model::user::BookOwner) -> Self {
         let kernel::model::user::BookOwner { id, name } = value;
+        Self { id, name }
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+#[serde(rename_all = "camelCase")]
+pub struct CheckoutUser {
+    #[schema(value_type = String)]
+    pub id: UserId,
+    pub name: String,
+}
+
+impl From<kernel::model::user::CheckoutUser> for CheckoutUser {
+    fn from(value: kernel::model::user::CheckoutUser) -> Self {
+        let kernel::model::user::CheckoutUser { id, name } = value;
         Self { id, name }
     }
 }

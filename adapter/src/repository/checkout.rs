@@ -206,12 +206,14 @@ impl CheckoutRepository for CheckoutRepositoryImpl {
                 c.checkout_id AS "checkout_id!: CheckoutId",
                 c.book_id AS "book_id!: BookId",
                 c.user_id AS "user_id!: UserId",
+                u.name AS user_name,
                 c.checked_out_at,
                 b.title,
                 b.author,
                 b.isbn
                 FROM checkouts AS c
-                INNER JOIN books AS b USING(book_id)
+                INNER JOIN books AS b ON b.book_id = c.book_id
+                INNER JOIN users AS u ON u.user_id = c.user_id
                 ORDER BY c.checked_out_at ASC
                 ;
             "#,
@@ -231,12 +233,14 @@ impl CheckoutRepository for CheckoutRepositoryImpl {
                 c.checkout_id AS "checkout_id!: CheckoutId",
                 c.book_id AS "book_id!: BookId",
                 c.user_id AS "user_id!: UserId",
+                u.name AS user_name,
                 c.checked_out_at,
                 b.title,
                 b.author,
                 b.isbn
                 FROM checkouts AS c
-                INNER JOIN books AS b USING(book_id)
+                INNER JOIN books AS b ON b.book_id = c.book_id
+                INNER JOIN users AS u ON u.user_id = c.user_id
                 WHERE c.user_id = $1
                 ORDER BY c.checked_out_at ASC
                 ;
@@ -262,13 +266,15 @@ impl CheckoutRepository for CheckoutRepositoryImpl {
                     rc.checkout_id AS "checkout_id!: CheckoutId",
                     rc.book_id AS "book_id!: BookId",
                     rc.user_id AS "user_id!: UserId",
+                    u.name AS user_name,
                     rc.checked_out_at,
                     rc.returned_at,
                     b.title,
                     b.author,
                     b.isbn
                 FROM returned_checkouts AS rc
-                INNER JOIN books AS b USING(book_id)
+                INNER JOIN books AS b ON b.book_id = rc.book_id
+                INNER JOIN users AS u ON u.user_id = rc.user_id
                 WHERE rc.book_id = $1
                 ORDER BY rc.checked_out_at DESC
             "#,
@@ -311,12 +317,14 @@ impl CheckoutRepositoryImpl {
                     c.checkout_id AS "checkout_id!: CheckoutId",
                     c.book_id AS "book_id!: BookId",
                     c.user_id AS "user_id!: UserId",
+                    u.name AS user_name,
                     c.checked_out_at,
                     b.title,
                     b.author,
                     b.isbn
                 FROM checkouts AS c
-                INNER JOIN books AS b USING(book_id)
+                INNER JOIN books AS b ON b.book_id = c.book_id
+                INNER JOIN users AS u ON u.user_id = c.user_id
                 WHERE c.book_id = $1
             "#,
             book_id as _,

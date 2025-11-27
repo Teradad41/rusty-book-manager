@@ -14,16 +14,31 @@ use crate::{
         checkout::CheckoutsResponse,
         user::{
             CreateUserRequest, UpdateUserPasswordRequest, UpdateUserPasswordRequestWithUserId,
-            UpdateUserRoleReqeust, UpdateUserRoleRequestWithUserId, UserReponse, UsersResponse,
+            UpdateUserRoleRequest, UpdateUserRoleRequestWithUserId, UserResponse, UsersResponse,
         },
     },
 };
 
+#[utoipa::path(
+    post,
+    path = "/users",
+    tag = "ユーザー",
+    request_body = CreateUserRequest,
+    responses(
+        (status = 200, description = "ユーザー登録成功", body = UserResponse),
+        (status = 400, description = "リクエストパラメータ不正"),
+        (status = 401, description = "認証エラー"),
+        (status = 403, description = "権限エラー（管理者のみ）"),
+    ),
+    security(
+        ("bearer_auth" = [])
+    )
+)]
 pub async fn register_user(
     user: AuthorizedUser,
     State(registry): State<AppRegistry>,
     Json(req): Json<CreateUserRequest>,
-) -> AppResult<Json<UserReponse>> {
+) -> AppResult<Json<UserResponse>> {
     if !user.is_admin() {
         return Err(AppError::ForbiddenOperation);
     }
@@ -34,6 +49,18 @@ pub async fn register_user(
     Ok(Json(registered_user.into()))
 }
 
+#[utoipa::path(
+    get,
+    path = "/users",
+    tag = "ユーザー",
+    responses(
+        (status = 200, description = "ユーザー一覧の取得成功", body = UsersResponse),
+        (status = 401, description = "認証エラー"),
+    ),
+    security(
+        ("bearer_auth" = [])
+    )
+)]
 pub async fn list_users(
     _user: AuthorizedUser,
     State(registry): State<AppRegistry>,
@@ -43,12 +70,29 @@ pub async fn list_users(
         .find_all()
         .await?
         .into_iter()
-        .map(UserReponse::from)
+        .map(UserResponse::from)
         .collect();
 
     Ok(Json(UsersResponse { items }))
 }
 
+#[utoipa::path(
+    delete,
+    path = "/users/{user_id}",
+    tag = "ユーザー",
+    params(
+        ("user_id" = String, Path, description = "ユーザーID")
+    ),
+    responses(
+        (status = 200, description = "ユーザー削除成功"),
+        (status = 401, description = "認証エラー"),
+        (status = 403, description = "権限エラー（管理者のみ）"),
+        (status = 404, description = "ユーザーが存在しない"),
+    ),
+    security(
+        ("bearer_auth" = [])
+    )
+)]
 pub async fn delete_user(
     user: AuthorizedUser,
     Path(user_id): Path<UserId>,
@@ -66,11 +110,29 @@ pub async fn delete_user(
     Ok(StatusCode::OK)
 }
 
+#[utoipa::path(
+    put,
+    path = "/users/{user_id}/role",
+    tag = "ユーザー",
+    params(
+        ("user_id" = String, Path, description = "ユーザーID")
+    ),
+    request_body = UpdateUserRoleRequest,
+    responses(
+        (status = 200, description = "ロール更新成功"),
+        (status = 401, description = "認証エラー"),
+        (status = 403, description = "権限エラー（管理者のみ）"),
+        (status = 404, description = "ユーザーが存在しない"),
+    ),
+    security(
+        ("bearer_auth" = [])
+    )
+)]
 pub async fn change_role(
     user: AuthorizedUser,
     Path(user_id): Path<UserId>,
     State(registry): State<AppRegistry>,
-    Json(req): Json<UpdateUserRoleReqeust>,
+    Json(req): Json<UpdateUserRoleRequest>,
 ) -> AppResult<StatusCode> {
     if !user.is_admin() {
         return Err(AppError::ForbiddenOperation);
@@ -84,10 +146,36 @@ pub async fn change_role(
     Ok(StatusCode::OK)
 }
 
-pub async fn get_current_user(user: AuthorizedUser) -> Json<UserReponse> {
-    Json(UserReponse::from(user.user))
+#[utoipa::path(
+    get,
+    path = "/users/me",
+    tag = "ユーザー",
+    responses(
+        (status = 200, description = "自身の情報の取得成功", body = UserResponse),
+        (status = 401, description = "認証エラー"),
+    ),
+    security(
+        ("bearer_auth" = [])
+    )
+)]
+pub async fn get_current_user(user: AuthorizedUser) -> Json<UserResponse> {
+    Json(UserResponse::from(user.user))
 }
 
+#[utoipa::path(
+    put,
+    path = "/users/me/password",
+    tag = "ユーザー",
+    request_body = UpdateUserPasswordRequest,
+    responses(
+        (status = 200, description = "パスワード更新成功"),
+        (status = 400, description = "リクエストパラメータ不正"),
+        (status = 401, description = "認証エラー"),
+    ),
+    security(
+        ("bearer_auth" = [])
+    )
+)]
 pub async fn change_password(
     user: AuthorizedUser,
     State(registry): State<AppRegistry>,
@@ -103,6 +191,18 @@ pub async fn change_password(
     Ok(StatusCode::OK)
 }
 
+#[utoipa::path(
+    get,
+    path = "/users/me/checkouts",
+    tag = "ユーザー",
+    responses(
+        (status = 200, description = "自身の貸出履歴の取得成功", body = CheckoutsResponse),
+        (status = 401, description = "認証エラー"),
+    ),
+    security(
+        ("bearer_auth" = [])
+    )
+)]
 pub async fn get_checkouts(
     user: AuthorizedUser,
     State(registry): State<AppRegistry>,

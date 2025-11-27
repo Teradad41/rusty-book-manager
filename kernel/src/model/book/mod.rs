@@ -1,9 +1,9 @@
-use uuid::Uuid;
-
 use crate::model::{
-    id::{BookId, UserId},
-    user::BookOwner,
+    id::{BookId, CheckoutId, UserId},
+    user::{BookOwner, CheckoutUser},
 };
+use sqlx::types::chrono::{DateTime, Utc};
+use uuid::Uuid;
 
 pub mod event;
 
@@ -15,6 +15,7 @@ pub struct Book {
     pub isbn: String,
     pub description: String,
     pub owner: BookOwner,
+    pub checkout: Option<Checkout>,
 }
 
 #[derive(Debug)]
@@ -44,4 +45,11 @@ pub struct UpdateBook {
 pub struct DeleteBook {
     pub book_id: BookId,
     pub requested_user: UserId,
+}
+
+#[derive(Debug)]
+pub struct Checkout {
+    pub checkout_id: CheckoutId,
+    pub checked_out_by: CheckoutUser,
+    pub checked_out_at: DateTime<Utc>,
 }
