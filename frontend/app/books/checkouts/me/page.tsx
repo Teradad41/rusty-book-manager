@@ -21,6 +21,7 @@ export default function CheckedOutBookList() {
     "linear(to-br, blue.50, purple.50)",
     "linear(to-br, gray.900, gray.800)"
   );
+  const emptyStateBg = useColorModeValue("white", "gray.700");
 
   return (
     <>
@@ -63,7 +64,7 @@ export default function CheckedOutBookList() {
             </SimpleGrid>
           ) : (
             <Box
-              bg={useColorModeValue("white", "gray.700")}
+              bg={emptyStateBg}
               p={8}
               borderRadius="xl"
               textAlign="center"

@@ -11,10 +11,10 @@ import {
   useColorModeValue,
   Badge,
 } from "@chakra-ui/react";
-import { User } from "../_types/user";
+import type { User } from "../_types/user";
 import DeleteUserButton from "./DeleteUserButton";
 import UpdateUserRoleSelector from "./UpdateUserRoleSelector";
-import { FC } from "react";
+import type { FC } from "react";
 
 type UserTableProps = {
   users: User[];
@@ -28,6 +28,8 @@ const UserTable: FC<UserTableProps> = ({
   const isAdmin = currentUser.role === "Admin";
   const cardBg = useColorModeValue("white", "gray.700");
   const borderColor = useColorModeValue("gray.200", "gray.600");
+  const tableHeadBg = useColorModeValue("gray.50", "gray.600");
+  const rowHoverBg = useColorModeValue("gray.50", "gray.600");
 
   return (
     <Card
@@ -41,7 +43,7 @@ const UserTable: FC<UserTableProps> = ({
       <CardBody p={0}>
         <TableContainer>
           <Table variant="simple" size="md">
-            <Thead bg={useColorModeValue("gray.50", "gray.600")}>
+            <Thead bg={tableHeadBg}>
               <Tr>
                 <Th fontSize="sm" fontWeight="bold">
                   名前
@@ -59,7 +61,7 @@ const UserTable: FC<UserTableProps> = ({
               {users.map((user) => (
                 <Tr
                   key={user.id}
-                  _hover={{ bg: useColorModeValue("gray.50", "gray.600") }}
+                  _hover={{ bg: rowHoverBg }}
                   transition="background 0.2s"
                 >
                   <Td fontWeight="medium">

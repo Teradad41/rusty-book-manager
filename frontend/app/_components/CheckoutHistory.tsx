@@ -9,7 +9,6 @@ import {
   Card,
   CardBody,
   Heading,
-  Box,
   useColorModeValue,
   Badge,
   Icon,
@@ -17,7 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { FiClock } from "react-icons/fi";
 import { useBookCheckouts } from "../_contexts/checkout";
-import { FC } from "react";
+import type { FC } from "react";
 
 type CheckoutHistoryProps = {
   bookId: string;
@@ -30,6 +29,7 @@ const CheckoutHistory: FC<CheckoutHistoryProps> = ({
 
   const cardBg = useColorModeValue("white", "gray.700");
   const borderColor = useColorModeValue("gray.200", "gray.600");
+  const rowHoverBg = useColorModeValue("gray.50", "gray.600");
 
   return (
     <Card
@@ -72,7 +72,7 @@ const CheckoutHistory: FC<CheckoutHistoryProps> = ({
               {checkouts?.map((co) => (
                 <Tr
                   key={co.id}
-                  _hover={{ bg: useColorModeValue("gray.50", "gray.600") }}
+                  _hover={{ bg: rowHoverBg }}
                   transition="background 0.2s"
                 >
                   <Td>{co.checkedOutAt}</Td>
