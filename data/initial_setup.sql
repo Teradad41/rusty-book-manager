@@ -12,7 +12,7 @@ INSERT INTO
 SELECT
     'Kyo Terada',
     'sitiang120@gmail.com',
-    '$2b$12$luRkd0.boAmPusBdZlOyNuiIr3uXr2Cwgd4lqIzpJ2a.Wyqo/IKCi',
+    '$2b$12$eX6ZxocXTKTV5ys9sxhuT.Eff7cSrqsWcekMR.BrtXTTgs.pXyLdW',
     role_id
 FROM
     roles
