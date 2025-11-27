@@ -23,32 +23,27 @@ api = { path = "./api" }
 kernel = { path = "./kernel" }
 shared = { path = "./shared" }
 registry = { path = "./registry" }
-anyhow = "1.0.75"
-axum = { version = "0.8.0", features = ["macros"] }
-sqlx = { version = "0.8.6", features = [
-	"runtime-tokio",
-	"uuid",
-	"chrono",
-	"macros",
-	"postgres",
-	"migrate",
-] }
-tokio = { version = "1.37.0", features = ["full"] }
+anyhow = { version = "1.0.75", default-features = false }
+axum = { version = "0.8.0", features = ["http1", "json", "query", "tokio"], default-features = false }
+sqlx = { version = "0.8.6", features = ["chrono", "macros", "migrate", "postgres", "runtime-tokio", "uuid"], default-features = false }
+tokio = { version = "1.37.0", features = ["rt-multi-thread"] }
 async-trait = "0.1.89"
-derive-new = "0.7.0"
-uuid = { version = "1.18.1", features = ["v4", "serde"] }
-serde = { version = "1.0.228", features = ["derive"] }
-thiserror = "2.0.17"
+derive-new = { version = "0.7.0", default-features = false }
+uuid = { version = "1.18.1", features = ["serde", "v4"], default-features = false }
+serde = { version = "1.0.228", default-features = false }
+thiserror = { version = "2.0.17", default-features = false }
 rstest = "0.18.2"
 strum = { version = "0.27.2", features = ["derive"] }
-tracing = { version = "0.1.41", features = ["log"] }
-tower-http = { version = "0.6.6", features = ["trace"] }
+tracing = { version = "0.1.41", default-features = false }
+tower-http = { version = "0.6.6", features = ["cors", "trace"] }
 garde = { version = "0.22.0", features = ["derive", "email"] }
-redis = { version = "0.32.7", features = ["tokio-rustls-comp"] }
-bcrypt = "0.17.1"
+redis = { version = "0.32.7", features = ["tokio-comp"], default-features = false }
+bcrypt = { version = "0.17.1", features = ["std"], default-features = false }
 secrecy = "0.10.3"
-axum-extra = { version = "0.12.2", features = ["typed-header"] }
-chrono = { version = "0.4.42", features = ["serde"] }
+axum-extra = { version = "0.12.2", features = ["typed-header"], default-features = false }
+chrono = { version = "0.4.42", features = ["serde"], default-features = false }
+utoipa = { version = "5.4.0", features = ["axum_extras", "uuid", "chrono"] }
+utoipa-redoc = { version = "6.0.0", features = ["axum"] }
 
 [dependencies]
 adapter.workspace = true
@@ -59,5 +54,7 @@ anyhow.workspace = true
 axum.workspace = true
 tokio.workspace = true
 tracing.workspace = true
-tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"], default-features = false }
 tower-http.workspace = true
+utoipa.workspace = true
+utoipa-redoc.workspace = true

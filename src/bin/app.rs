@@ -4,7 +4,7 @@ use api::route::{
     auth::{self},
     v1,
 };
-use axum::Router;
+use axum::{Router, http::Method};
 use registry::AppRegistry;
 use shared::{
     config::AppConfig,
@@ -17,6 +17,7 @@ use std::{
 use tokio::net::TcpListener;
 use tower_http::{
     LatencyUnit,
+    cors::{self, CorsLayer},
     trace::{DefaultMakeSpan, DefaultOnRequest, DefaultOnResponse, TraceLayer},
 };
 use tracing::Level;
@@ -60,6 +61,7 @@ async fn bootstrap() -> Result<()> {
     let app = Router::new()
         .merge(v1::routes())
         .merge(auth::routes())
+        .layer(cors())
         .layer(
             TraceLayer::new_for_http()
                 .make_span_with(DefaultMakeSpan::new().level(Level::INFO))
@@ -86,4 +88,11 @@ async fn bootstrap() -> Result<()> {
                 "Unexpected error"
             )
         })
+}
+
+fn cors() -> CorsLayer {
+    CorsLayer::new()
+        .allow_headers(cors::Any)
+        .allow_methods([Method::GET, Method::POST, Method::PUT, Method::DELETE])
+        .allow_origin(cors::Any)
 }
