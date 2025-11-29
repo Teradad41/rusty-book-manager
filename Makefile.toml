@@ -57,6 +57,23 @@ dependencies = ["before-build"]
 command = "cargo"
 args = ["run", "${@}"]
 
+# ホットリロード付き開発サーバー
+[tasks.dev]
+extend = "set-env-local"
+dependencies = ["before-build"]
+install_crate = { crate_name = "cargo-watch", binary = "cargo-watch", test_arg = "--help" }
+command = "cargo"
+args = [
+  "watch",
+  "-x", "run",
+  "-w", "src",
+  "-w", "api",
+  "-w", "kernel",
+  "-w", "adapter",
+  "-w", "shared",
+  "-w", "registry",
+]
+
 [tasks.run-in-docker]
 extend = "set-env-docker"
 dependencies = ["before-build", "compose-build-app"]
