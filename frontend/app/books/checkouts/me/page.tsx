@@ -39,11 +39,11 @@ export default function CheckedOutBookList() {
               bgGradient="linear(to-r, purple.500, pink.500)"
               bgClip="text"
             >
-              借りている蔵書
+              私が借りている本
             </Heading>
             {checkouts && checkouts.length > 0 && (
               <Text fontSize="lg" color="gray.600">
-                現在 {checkouts.length} 冊を借りています
+                現在 {checkouts.length} 冊を私が借りています
               </Text>
             )}
           </Box>
@@ -71,7 +71,7 @@ export default function CheckedOutBookList() {
               shadow="lg"
             >
               <Text color="gray.500" fontSize="lg">
-                現在借りている蔵書はありません
+                現在私が借りている蔵書はありません
               </Text>
             </Box>
           )}

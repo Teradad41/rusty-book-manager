@@ -41,11 +41,11 @@ export default function CheckedOutBookList() {
               bgGradient="linear(to-r, orange.500, red.500)"
               bgClip="text"
             >
-              貸出中の蔵書
+              全体の貸出状況
             </Heading>
             {checkouts && checkouts.length > 0 && (
               <Text fontSize="lg" color="gray.600">
-                現在 {checkouts.length} 冊が貸し出されています
+                現在 {checkouts.length} 冊が全体で貸し出されています
               </Text>
             )}
           </Box>
@@ -77,7 +77,7 @@ export default function CheckedOutBookList() {
               shadow="lg"
             >
               <Text color="gray.500" fontSize="lg">
-                現在貸出中の蔵書はありません
+                現在全体で貸出中の蔵書はありません
               </Text>
             </Box>
           )}
