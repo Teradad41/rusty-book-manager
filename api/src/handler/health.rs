@@ -5,6 +5,9 @@ use registry::AppRegistry;
     get,
     path = "/health",
     tag = "ヘルスチェック",
+    summary = "ヘルスチェック",
+    description = "APIサーバーが稼働しているかを確認します",
+    operation_id = "healthCheck",
     responses(
         (status = 200, description = "ヘルスチェック成功"),
     )
@@ -17,6 +20,9 @@ pub async fn health_check() -> StatusCode {
     get,
     path = "/health/db",
     tag = "ヘルスチェック",
+    summary = "DBヘルスチェック",
+    description = "データベースへの接続が正常かを確認します",
+    operation_id = "healthCheckDb",
     responses(
         (status = 200, description = "DBヘルスチェック成功"),
         (status = 500, description = "DBヘルスチェック失敗"),

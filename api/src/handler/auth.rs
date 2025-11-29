@@ -12,6 +12,9 @@ use crate::{
     post,
     path = "/auth/login",
     tag = "認証",
+    summary = "ログイン",
+    description = "メールアドレスとパスワードでログインし、アクセストークンを取得します",
+    operation_id = "login",
     request_body = LoginRequest,
     responses(
         (status = 200, description = "ログイン成功", body = AccessTokenResponse),
@@ -43,12 +46,15 @@ pub async fn login(
     post,
     path = "/auth/logout",
     tag = "認証",
+    summary = "ログアウト",
+    description = "現在のセッションからログアウトし、アクセストークンを無効化します",
+    operation_id = "logout",
     responses(
         (status = 204, description = "ログアウト成功"),
         (status = 401, description = "認証エラー"),
     ),
     security(
-        ("bearer_auth" = ["Bearer {access_token}"])
+        ("bearer_auth" = [])
     )
 )]
 pub async fn logout(

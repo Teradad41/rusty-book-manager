@@ -16,6 +16,9 @@ use crate::{extractor::AuthorizedUser, model::checkout::CheckoutsResponse};
     post,
     path = "/books/{book_id}/checkouts",
     tag = "貸出・返却",
+    summary = "蔵書貸出",
+    description = "指定した蔵書を借りる。既に貸出中の場合はエラーになります",
+    operation_id = "checkoutBook",
     params(
         ("book_id" = String, Path, description = "蔵書ID")
     ),
@@ -47,6 +50,9 @@ pub async fn checkout_book(
     put,
     path = "/books/{book_id}/checkouts/{checkout_id}/returned",
     tag = "貸出・返却",
+    summary = "蔵書返却",
+    description = "借りた蔵書を返却します",
+    operation_id = "returnBook",
     params(
         ("book_id" = String, Path, description = "蔵書ID"),
         ("checkout_id" = String, Path, description = "貸出ID")
@@ -79,6 +85,9 @@ pub async fn return_book(
     get,
     path = "/books/checkouts",
     tag = "貸出・返却",
+    summary = "貸出中蔵書一覧取得",
+    description = "現在貸出中のすべての蔵書を取得します",
+    operation_id = "listCheckedOutBooks",
     responses(
         (status = 200, description = "貸出中蔵書一覧の取得成功", body = CheckoutsResponse),
         (status = 401, description = "認証エラー"),
@@ -103,6 +112,9 @@ pub async fn show_checked_out_list(
     get,
     path = "/books/{book_id}/checkout-history",
     tag = "貸出・返却",
+    summary = "蔵書貸出履歴取得",
+    description = "指定した蔵書の貸出履歴（返却済みを含む）を取得します",
+    operation_id = "getBookCheckoutHistory",
     params(
         ("book_id" = String, Path, description = "蔵書ID")
     ),

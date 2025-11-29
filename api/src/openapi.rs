@@ -1,15 +1,18 @@
-use utoipa::OpenApi;
+use utoipa::{
+    Modify, OpenApi,
+    openapi::security::{HttpAuthScheme, HttpBuilder, SecurityScheme},
+};
 
 #[derive(OpenApi)]
 #[openapi(
     info(
-        title = "Book App",
+        title = "Rusty Book Manager",
         version = "0.1.0",
         description = "書籍「RustによるWebアプリケーション開発」のサンプルアプリ",
         contact(
             name = "Kyo Terada",
-            email = "kyo.terada@sellca-sellcar.com",
-            url = "https://github.com/kyo-terada",
+            email = "sitiang120@gmail.com",
+            url = "https://github.com/Teradad41/rusty-book-manager",
         ),
         license(name = "MIT", url = "https://opensource.org/licenses/MIT",),
     ),
@@ -31,8 +34,8 @@ use utoipa::OpenApi;
         crate::handler::user::list_users,
         crate::handler::user::delete_user,
         crate::handler::user::change_role,
-        crate::handler::user::get_current_user,
         crate::handler::user::change_password,
+        crate::handler::user::get_current_user,
         crate::handler::user::get_checkouts,
     ),
     components(schemas(
@@ -54,6 +57,29 @@ use utoipa::OpenApi;
         crate::model::user::RoleName,
         crate::model::user::BookOwner,
         crate::model::user::CheckoutUser,
-    ))
+    )),
+    modifiers(&SecurityAddon),
 )]
 pub struct ApiDoc;
+
+/// Bearer 認証スキーマを追加するための Modifier
+struct SecurityAddon;
+
+impl Modify for SecurityAddon {
+    fn modify(&self, openapi: &mut utoipa::openapi::OpenApi) {
+        if let Some(components) = openapi.components.as_mut() {
+            components.add_security_scheme(
+                "bearer_auth",
+                SecurityScheme::Http(
+                    HttpBuilder::new()
+                        .scheme(HttpAuthScheme::Bearer)
+                        .bearer_format("JWT")
+                        .description(Some(
+                            "ログインAPIで取得したアクセストークンを入力してください",
+                        ))
+                        .build(),
+                ),
+            );
+        }
+    }
+}

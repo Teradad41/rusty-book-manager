@@ -23,6 +23,9 @@ use crate::{
     post,
     path = "/users",
     tag = "ユーザー",
+    summary = "ユーザー登録",
+    description = "新しいユーザーを登録します。管理者のみ実行可能です",
+    operation_id = "registerUser",
     request_body = CreateUserRequest,
     responses(
         (status = 200, description = "ユーザー登録成功", body = UserResponse),
@@ -53,6 +56,9 @@ pub async fn register_user(
     get,
     path = "/users",
     tag = "ユーザー",
+    summary = "ユーザー一覧取得",
+    description = "登録されているすべてのユーザーを取得します",
+    operation_id = "listUsers",
     responses(
         (status = 200, description = "ユーザー一覧の取得成功", body = UsersResponse),
         (status = 401, description = "認証エラー"),
@@ -80,6 +86,9 @@ pub async fn list_users(
     delete,
     path = "/users/{user_id}",
     tag = "ユーザー",
+    summary = "ユーザー削除",
+    description = "指定したユーザーを削除します。管理者のみ実行可能です",
+    operation_id = "deleteUser",
     params(
         ("user_id" = String, Path, description = "ユーザーID")
     ),
@@ -114,6 +123,9 @@ pub async fn delete_user(
     put,
     path = "/users/{user_id}/role",
     tag = "ユーザー",
+    summary = "ユーザーロール変更",
+    description = "指定したユーザーのロール（権限）を変更します。管理者のみ実行可能です",
+    operation_id = "changeUserRole",
     params(
         ("user_id" = String, Path, description = "ユーザーID")
     ),
@@ -150,6 +162,9 @@ pub async fn change_role(
     get,
     path = "/users/me",
     tag = "ユーザー",
+    summary = "現在のユーザー情報取得",
+    description = "ログイン中のユーザー自身の情報を取得します",
+    operation_id = "getCurrentUser",
     responses(
         (status = 200, description = "自身の情報の取得成功", body = UserResponse),
         (status = 401, description = "認証エラー"),
@@ -166,6 +181,9 @@ pub async fn get_current_user(user: AuthorizedUser) -> Json<UserResponse> {
     put,
     path = "/users/me/password",
     tag = "ユーザー",
+    summary = "パスワード変更",
+    description = "ログイン中のユーザー自身のパスワードを変更します",
+    operation_id = "changePassword",
     request_body = UpdateUserPasswordRequest,
     responses(
         (status = 200, description = "パスワード更新成功"),
@@ -195,6 +213,9 @@ pub async fn change_password(
     get,
     path = "/users/me/checkouts",
     tag = "ユーザー",
+    summary = "自分の貸出一覧取得",
+    description = "ログイン中のユーザーが現在借りている蔵書の一覧を取得します",
+    operation_id = "getMyCheckouts",
     responses(
         (status = 200, description = "自身の貸出履歴の取得成功", body = CheckoutsResponse),
         (status = 401, description = "認証エラー"),

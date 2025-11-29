@@ -20,6 +20,9 @@ use crate::{
     post,
     path = "/books",
     tag = "蔵書",
+    summary = "蔵書登録",
+    description = "新しい蔵書を登録します。登録者が蔵書の所有者になります",
+    operation_id = "registerBook",
     request_body = CreateBookRequest,
     responses(
         (status = 201, description = "蔵書の登録成功"),
@@ -47,11 +50,17 @@ pub async fn register_book(
     get,
     path = "/books",
     tag = "蔵書",
+    summary = "蔵書一覧取得",
+    description = "登録されている蔵書の一覧をページネーション付きで取得します",
+    operation_id = "listBooks",
     params(
         BookListQuery
     ),
     responses(
         (status = 200, description = "蔵書一覧の取得成功", body = PaginatedBookResponse),
+    ),
+    security(
+        ("bearer_auth" = [])
     )
 )]
 pub async fn show_book_list(
@@ -73,12 +82,18 @@ pub async fn show_book_list(
     get,
     path = "/books/{book_id}",
     tag = "蔵書",
+    summary = "蔵書詳細取得",
+    description = "指定したIDの蔵書の詳細情報を取得します。貸出情報も含まれます",
+    operation_id = "getBook",
     params(
         ("book_id" = String, Path, description = "蔵書ID")
     ),
     responses(
         (status = 200, description = "蔵書詳細の取得成功", body = BookResponse),
         (status = 404, description = "蔵書が存在しない"),
+    ),
+    security(
+        ("bearer_auth" = [])
     )
 )]
 #[tracing::instrument(
@@ -106,6 +121,9 @@ pub async fn show_book(
     put,
     path = "/books/{book_id}",
     tag = "蔵書",
+    summary = "蔵書更新",
+    description = "指定したIDの蔵書情報を更新します",
+    operation_id = "updateBook",
     params(
         ("book_id" = String, Path, description = "蔵書ID")
     ),
@@ -141,6 +159,9 @@ pub async fn update_book(
     delete,
     path = "/books/{book_id}",
     tag = "蔵書",
+    summary = "蔵書削除",
+    description = "指定したIDの蔵書を削除します",
+    operation_id = "deleteBook",
     params(
         ("book_id" = String, Path, description = "蔵書ID")
     ),

@@ -12,10 +12,13 @@ use serde::{Deserialize, Serialize};
 use strum::VariantNames;
 use utoipa::ToSchema;
 
+/// ユーザーの権限ロール
 #[derive(Serialize, Deserialize, VariantNames, ToSchema)]
 #[strum(serialize_all = "kebab-case")]
 pub enum RoleName {
+    /// 管理者（ユーザー管理が可能）
     Admin,
+    /// 一般ユーザー
     User,
 }
 
@@ -37,19 +40,28 @@ impl From<RoleName> for Role {
     }
 }
 
+/// ユーザー一覧レスポンス
 #[derive(Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct UsersResponse {
+    /// ユーザー一覧
     pub items: Vec<UserResponse>,
 }
 
+/// ユーザー情報レスポンス
 #[derive(Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct UserResponse {
-    #[schema(value_type = String)]
+    /// ユーザーID
+    #[schema(value_type = String, example = "550e8400-e29b-41d4-a716-446655440000")]
     pub id: UserId,
+    /// ユーザー名
+    #[schema(example = "山田太郎")]
     pub name: String,
+    /// メールアドレス
+    #[schema(example = "yamada@example.com")]
     pub email: String,
+    /// ユーザーの権限ロール
     pub role: RoleName,
 }
 
@@ -71,12 +83,17 @@ impl From<User> for UserResponse {
     }
 }
 
+/// パスワード変更リクエスト
 #[derive(Deserialize, Validate, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct UpdateUserPasswordRequest {
+    /// 現在のパスワード
     #[garde(length(min = 1))]
+    #[schema(example = "current_password123")]
     pub current_password: String,
+    /// 新しいパスワード
     #[garde(length(min = 1))]
+    #[schema(example = "new_password456")]
     pub new_password: String,
 }
 
@@ -101,14 +118,21 @@ impl From<UpdateUserPasswordRequestWithUserId> for UpdateUserPassword {
     }
 }
 
+/// ユーザー登録リクエスト
 #[derive(Deserialize, Validate, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct CreateUserRequest {
+    /// ユーザー名
     #[garde(length(min = 1))]
+    #[schema(example = "山田太郎")]
     pub name: String,
+    /// メールアドレス
     #[garde(email)]
+    #[schema(example = "yamada@example.com")]
     pub email: String,
+    /// パスワード
     #[garde(length(min = 1))]
+    #[schema(example = "password123")]
     pub password: String,
 }
 
@@ -128,9 +152,11 @@ impl From<CreateUserRequest> for CreateUser {
     }
 }
 
+/// ユーザーロール変更リクエスト
 #[derive(Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct UpdateUserRoleRequest {
+    /// 変更後のロール
     pub role: RoleName,
 }
 
@@ -148,11 +174,15 @@ impl From<UpdateUserRoleRequestWithUserId> for UpdateUserRole {
     }
 }
 
+/// 蔵書の所有者情報
 #[derive(Debug, Serialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct BookOwner {
-    #[schema(value_type = String)]
+    /// 所有者のユーザーID
+    #[schema(value_type = String, example = "550e8400-e29b-41d4-a716-446655440000")]
     pub id: UserId,
+    /// 所有者の名前
+    #[schema(example = "山田太郎")]
     pub name: String,
 }
 
@@ -163,11 +193,15 @@ impl From<kernel::model::user::BookOwner> for BookOwner {
     }
 }
 
+/// 貸出ユーザー情報
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct CheckoutUser {
-    #[schema(value_type = String)]
+    /// ユーザーID
+    #[schema(value_type = String, example = "550e8400-e29b-41d4-a716-446655440000")]
     pub id: UserId,
+    /// ユーザー名
+    #[schema(example = "山田太郎")]
     pub name: String,
 }
 
