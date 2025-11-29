@@ -76,7 +76,9 @@ pub struct UpdateBookRequest {
 
     /// 書籍の説明・概要
     #[garde(skip)]
-    #[schema(example = "The official book on the Rust programming language, updated for Rust 2024")]
+    #[schema(
+        example = "The official book on the Rust programming language, updated for Rust 2024"
+    )]
     pub description: String,
 }
 
