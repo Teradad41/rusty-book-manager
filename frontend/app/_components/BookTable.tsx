@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card,
   CardBody,
@@ -9,9 +11,9 @@ import {
   Text,
   Flex,
   Icon,
-  useColorModeValue,
+  Box,
 } from "@chakra-ui/react";
-import { FiBook, FiUser } from "react-icons/fi";
+import { FiUser } from "react-icons/fi";
 import NextLink from "next/link";
 import { FC } from "react";
 
@@ -27,38 +29,68 @@ type BookTableProps = {
 };
 
 const BookTable: FC<BookTableProps> = ({ data, appendButton }) => {
-  const bgColor = useColorModeValue("white", "gray.700");
-  const borderColor = useColorModeValue("gray.200", "gray.600");
-  const hoverShadow = useColorModeValue("xl", "dark-lg");
-
   return (
     <LinkBox
       as={Card}
-      bg={bgColor}
-      borderColor={borderColor}
-      borderWidth="1px"
-      borderRadius="xl"
+      bg="white"
+      border="1px solid"
+      borderColor="brand.paper"
+      borderRadius="none"
       overflow="hidden"
-      transition="all 0.3s ease"
+      transition="all 0.4s cubic-bezier(0.4, 0, 0.2, 1)"
       _hover={{
-        transform: "translateY(-4px)",
-        shadow: hoverShadow,
-        borderColor: "blue.400",
+        transform: "translateY(-6px)",
+        boxShadow: "0 15px 35px rgba(0,0,0,0.1)",
+        "& .book-spine": {
+          width: "6px",
+        },
+        "& .book-title": {
+          color: "brand.primary",
+        },
       }}
       cursor="pointer"
+      h="full"
+      position="relative"
     >
-      <Stack spacing={0}>
-        <CardBody>
-          <Flex align="center" gap={2} mb={3}>
-            <Icon as={FiBook} color="blue.500" boxSize={5} />
-            <Heading size="md" noOfLines={2}>
-              <LinkOverlay as={NextLink} href={`/books/${data.id}`}>
-                {data.title}
-              </LinkOverlay>
-            </Heading>
-          </Flex>
-          <Flex align="center" gap={2} color="gray.600">
-            <Icon as={FiUser} boxSize={4} />
+      {/* Book spine effect */}
+      <Box
+        className="book-spine"
+        position="absolute"
+        left={0}
+        top={0}
+        bottom={0}
+        width="3px"
+        bg="brand.primary"
+        transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
+      />
+
+      <Stack spacing={0} h="full">
+        <CardBody py={5} px={6}>
+          <Heading
+            className="book-title"
+            size="md"
+            mb={3}
+            noOfLines={2}
+            fontFamily="heading"
+            fontWeight="400"
+            fontSize="lg"
+            lineHeight="1.4"
+            transition="color 0.3s"
+          >
+            <LinkOverlay as={NextLink} href={`/books/${data.id}`}>
+              {data.title}
+            </LinkOverlay>
+          </Heading>
+
+          <Flex
+            align="center"
+            gap={2}
+            color="brand.textMuted"
+            pt={3}
+            borderTop="1px solid"
+            borderColor="brand.paper"
+          >
+            <Icon as={FiUser} boxSize={3} />
             <Text fontSize="sm" noOfLines={1}>
               {data.author}
             </Text>
@@ -66,8 +98,14 @@ const BookTable: FC<BookTableProps> = ({ data, appendButton }) => {
         </CardBody>
 
         {appendButton && (
-          <CardFooter pt={0} pb={4}>
-            {appendButton}
+          <CardFooter
+            pt={0}
+            pb={5}
+            px={6}
+            borderTop="1px solid"
+            borderColor="brand.paper"
+          >
+            <Box w="full">{appendButton}</Box>
           </CardFooter>
         )}
       </Stack>

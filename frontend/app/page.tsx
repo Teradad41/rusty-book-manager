@@ -9,21 +9,14 @@ import {
   Container,
   SimpleGrid,
   Box,
-  Input,
-  InputGroup,
-  InputRightElement,
-  IconButton,
   LinkBox,
   LinkOverlay,
-  Tag,
-  CardFooter,
   Badge,
   Flex,
   Icon,
-  useColorModeValue,
 } from "@chakra-ui/react";
-import { SearchIcon } from "@chakra-ui/icons";
-import { FiBook, FiUser, FiCheckCircle } from "react-icons/fi";
+import { keyframes } from "@emotion/react";
+import { FiUser, FiClock } from "react-icons/fi";
 import Header from "./_components/Header";
 import { FC } from "react";
 import NextLink from "next/link";
@@ -33,6 +26,17 @@ import { NextPage } from "next";
 import Pagination from "./_components/Pagination";
 
 const BOOKS_PER_PAGE = 12;
+
+const fadeInUp = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
 
 const Home: NextPage = ({
   searchParams,
@@ -50,40 +54,129 @@ const Home: NextPage = ({
   const offset = books?.offset ?? 0;
   const total = books?.total ?? 0;
 
-  const bgGradient = useColorModeValue(
-    "linear(to-br, blue.50, purple.50)",
-    "linear(to-br, gray.900, gray.800)"
-  );
-
   return (
     <>
-      <Header></Header>
-      <Box minH="100vh" bgGradient={bgGradient}>
-        <Container maxW="container.xl" py={8}>
-          <Box mb={8} textAlign="center">
-            <Heading
-              as="h1"
-              size="2xl"
-              mb={4}
-              bgGradient="linear(to-r, blue.500, purple.500)"
-              bgClip="text"
-            >
-              蔵書コレクション
-            </Heading>
-            <Text fontSize="lg" color="gray.600">
-              全 {total} 冊の書籍が登録されています
-            </Text>
-          </Box>
+      <Header />
 
+      {/* Hero Section */}
+      <Box
+        bg="brand.primary"
+        color="white"
+        py={{ base: 12, md: 20 }}
+        position="relative"
+        overflow="hidden"
+      >
+        {/* Decorative elements */}
+        <Box
+          position="absolute"
+          top="0"
+          right="0"
+          w="40%"
+          h="100%"
+          bgGradient="linear(to-bl, brand.accent, transparent)"
+          opacity={0.15}
+        />
+        <Box
+          position="absolute"
+          bottom="-50%"
+          left="-10%"
+          w="40%"
+          h="100%"
+          bg="brand.primaryLight"
+          borderRadius="50%"
+          opacity={0.3}
+        />
+
+        <Container maxW="1400px" position="relative">
+          <Flex
+            direction={{ base: "column", md: "row" }}
+            align="center"
+            justify="space-between"
+            gap={8}
+          >
+            <Box animation={`${fadeInUp} 0.6s ease-out`}>
+              <Text
+                fontSize="xs"
+                letterSpacing="0.3em"
+                textTransform="uppercase"
+                color="brand.accentLight"
+                fontWeight="600"
+                mb={3}
+              >
+                Library Collection
+              </Text>
+              <Heading
+                as="h1"
+                fontSize={{ base: "4xl", md: "5xl", lg: "6xl" }}
+                fontFamily="heading"
+                fontWeight="400"
+                letterSpacing="-0.02em"
+                lineHeight="1.1"
+                mb={4}
+                color="white"
+              >
+                蔵書コレクション
+              </Heading>
+              <Text
+                fontSize="lg"
+                color="whiteAlpha.900"
+                maxW="500px"
+                lineHeight="1.8"
+              >
+                知識の海へようこそ。あなたの探している一冊がここにあります。
+              </Text>
+            </Box>
+
+            <Box
+              bg="white"
+              color="brand.text"
+              px={8}
+              py={6}
+              textAlign="center"
+              minW="200px"
+              animation={`${fadeInUp} 0.6s ease-out 0.2s backwards`}
+            >
+              <Text
+                fontSize="5xl"
+                fontFamily="heading"
+                fontWeight="400"
+                color="brand.primary"
+                lineHeight="1"
+              >
+                {total}
+              </Text>
+              <Text
+                fontSize="xs"
+                letterSpacing="0.2em"
+                textTransform="uppercase"
+                color="brand.textMuted"
+                fontWeight="600"
+                mt={1}
+              >
+                Books Available
+              </Text>
+            </Box>
+          </Flex>
+        </Container>
+      </Box>
+
+      {/* Main Content */}
+      <Box bg="brand.ivory" minH="60vh" py={12}>
+        <Container maxW="1400px">
           <Pagination limit={limit} offset={offset} total={total} />
 
           <SimpleGrid
-            columns={{ base: 1, md: 2, lg: 3, xl: 4 }}
+            columns={{ base: 1, sm: 2, lg: 3, xl: 4 }}
             spacing={6}
-            my={8}
+            my={10}
           >
-            {books?.items.map((book) => (
-              <BookCard key={book.id} data={book} />
+            {books?.items.map((book, index) => (
+              <Box
+                key={book.id}
+                animation={`${fadeInUp} 0.5s ease-out ${index * 0.05}s backwards`}
+              >
+                <BookCard data={book} />
+              </Box>
             ))}
           </SimpleGrid>
 
@@ -101,71 +194,105 @@ type BookTableProps = {
 };
 
 const BookCard: FC<BookTableProps> = ({ data }: BookTableProps) => {
-  const bgColor = useColorModeValue("white", "gray.700");
-  const borderColor = useColorModeValue("gray.200", "gray.600");
-  const hoverShadow = useColorModeValue(
-    "xl",
-    "dark-lg"
-  );
-  const statusColorScheme = data.checkout ? "orange" : "green";
+  const isCheckedOut = !!data.checkout;
 
   return (
     <LinkBox
       as={Card}
-      bg={bgColor}
-      borderColor={borderColor}
-      borderWidth="1px"
-      borderRadius="xl"
+      bg="white"
+      border="1px solid"
+      borderColor="brand.paper"
+      borderRadius="none"
       overflow="hidden"
-      transition="all 0.3s ease"
+      transition="all 0.4s cubic-bezier(0.4, 0, 0.2, 1)"
       _hover={{
         transform: "translateY(-8px)",
-        shadow: hoverShadow,
-        borderColor: data.checkout ? "orange.400" : "blue.400",
+        boxShadow: "0 20px 40px rgba(0,0,0,0.12)",
+        "& .book-spine": {
+          width: "8px",
+          bg: isCheckedOut ? "brand.secondary" : "brand.primary",
+        },
+        "& .book-title": {
+          color: "brand.primary",
+        },
       }}
       cursor="pointer"
       h="full"
+      position="relative"
     >
+      {/* Book spine effect */}
+      <Box
+        className="book-spine"
+        position="absolute"
+        left={0}
+        top={0}
+        bottom={0}
+        width="4px"
+        bg={isCheckedOut ? "brand.secondaryLight" : "brand.primaryLight"}
+        transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
+      />
+
       <Stack spacing={0} h="full">
-        <Box
-          bg={data.checkout ? "orange.50" : "blue.50"}
-          py={4}
-          px={6}
-          borderBottomWidth="1px"
-          borderColor={borderColor}
-        >
-          <Flex align="center" gap={2} mb={2}>
-            <Icon as={FiBook} color={data.checkout ? "orange.500" : "blue.500"} boxSize={5} />
-            <Badge colorScheme={statusColorScheme} fontSize="xs" px={2} py={1} borderRadius="full">
-              {data.checkout ? "貸出中" : "利用可能"}
-            </Badge>
-          </Flex>
+        {/* Status Badge */}
+        <Box px={6} pt={5} pb={3}>
+          <Badge
+            bg={isCheckedOut ? "brand.secondary" : "brand.primary"}
+            color="white"
+            fontSize="2xs"
+            px={3}
+            py={1}
+          >
+            {isCheckedOut ? "貸出中" : "利用可能"}
+          </Badge>
         </Box>
 
-        <CardBody flex="1">
-          <Heading size="md" mb={3} noOfLines={2}>
+        <CardBody pt={2} pb={6} px={6} flex="1" display="flex" flexDirection="column">
+          <Heading
+            className="book-title"
+            size="md"
+            mb={4}
+            noOfLines={2}
+            fontFamily="heading"
+            fontWeight="400"
+            fontSize="xl"
+            lineHeight="1.4"
+            transition="color 0.3s"
+          >
             <LinkOverlay as={NextLink} href={`/books/${data.id}`}>
               {data.title}
             </LinkOverlay>
           </Heading>
-          <Flex align="center" gap={2} color="gray.600">
-            <Icon as={FiUser} boxSize={4} />
-            <Text fontSize="sm" noOfLines={1}>
-              {data.author}
-            </Text>
-          </Flex>
-        </CardBody>
 
-        {data.checkout && (
-          <CardFooter pt={0} pb={4}>
-            <Flex align="center" gap={2} w="full">
-              <Icon as={FiCheckCircle} color="orange.500" boxSize={4} />
-              <Text fontSize="sm" color="gray.600" noOfLines={1}>
-                {data.checkout?.checkedOutBy?.name} さんが借りています
+          <Box flex="1" />
+
+          <Box
+            pt={4}
+            borderTop="1px solid"
+            borderColor="brand.paper"
+          >
+            <Flex align="center" gap={2} color="brand.textMuted">
+              <Icon as={FiUser} boxSize={3} />
+              <Text fontSize="sm" noOfLines={1}>
+                {data.author}
               </Text>
             </Flex>
-          </CardFooter>
-        )}
+          </Box>
+
+          {isCheckedOut && (
+            <Flex
+              align="center"
+              gap={2}
+              mt={3}
+              color="brand.secondary"
+              fontSize="xs"
+            >
+              <Icon as={FiClock} boxSize={3} />
+              <Text noOfLines={1}>
+                {data.checkout?.checkedOutBy?.name} が借りています
+              </Text>
+            </Flex>
+          )}
+        </CardBody>
       </Stack>
     </LinkBox>
   );

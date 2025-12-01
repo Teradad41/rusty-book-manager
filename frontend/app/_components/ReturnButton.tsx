@@ -4,9 +4,10 @@ import { ACCESS_TOKEN_KEY } from "@/app/_components/auth";
 import { Checkout } from "../_types/book";
 import useLocalStorageState from "use-local-storage-state";
 import { put } from "../_lib/client";
-import { Button, useToast } from "@chakra-ui/react";
+import { Button, useToast, Icon } from "@chakra-ui/react";
 import { useSWRConfig } from "swr";
 import { FC } from "react";
+import { FiCornerUpLeft } from "react-icons/fi";
 
 export type ReturnButtonProps = {
   checkout: Checkout;
@@ -33,6 +34,10 @@ const ReturnButton: FC<ReturnButtonProps> = ({
         status: "success",
         duration: 5000,
         isClosable: true,
+        position: "top-right",
+        containerStyle: {
+          borderRadius: 0,
+        },
       });
 
       mutate(["/api/v1/users/me/checkouts", accessToken]);
@@ -44,12 +49,29 @@ const ReturnButton: FC<ReturnButtonProps> = ({
         status: "error",
         duration: 5000,
         isClosable: true,
+        position: "top-right",
+        containerStyle: {
+          borderRadius: 0,
+        },
       });
     }
   };
 
   return (
-    <Button colorScheme="blue" onClick={onClickReturningSubmit}>
+    <Button
+      w="full"
+      size="sm"
+      variant="outline"
+      leftIcon={<Icon as={FiCornerUpLeft} />}
+      onClick={onClickReturningSubmit}
+      borderColor="brand.primary"
+      color="brand.primary"
+      _hover={{
+        bg: "brand.primary",
+        color: "white",
+      }}
+      transition="all 0.2s"
+    >
       返却する
     </Button>
   );

@@ -6,7 +6,7 @@ import {
   Text,
   Icon,
   Box,
-  useColorModeValue,
+  HStack,
 } from "@chakra-ui/react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { usePathname, useRouter } from "next/navigation";
@@ -37,17 +37,14 @@ const Pagination: FC<PaginationProps> = ({
   const currentPage = Math.floor(offset / limit) + 1;
   const totalPages = Math.ceil(total / limit);
 
-  const bgColor = useColorModeValue("white", "gray.700");
-  const borderColor = useColorModeValue("gray.200", "gray.600");
+  if (total === 0) return null;
 
   return (
     <Box
-      bg={bgColor}
-      borderWidth="1px"
-      borderColor={borderColor}
-      borderRadius="xl"
+      bg="white"
+      border="1px solid"
+      borderColor="brand.paper"
       p={4}
-      shadow="sm"
     >
       <Flex align="center" justify="space-between" gap={4} flexWrap="wrap">
         <Button
@@ -56,43 +53,66 @@ const Pagination: FC<PaginationProps> = ({
           onClick={() =>
             replace(createPageURL(limit, Math.max(offset - limit, 0)))
           }
-          colorScheme="blue"
           variant="outline"
-          size="md"
-          borderRadius="lg"
+          size="sm"
+          borderColor="brand.primary"
+          color="brand.primary"
           _hover={{
+            bg: "brand.primary",
+            color: "white",
             transform: "translateX(-2px)",
+          }}
+          _disabled={{
+            opacity: 0.4,
+            cursor: "not-allowed",
+            _hover: {
+              bg: "transparent",
+              transform: "none",
+            },
           }}
           transition="all 0.2s"
         >
           前へ
         </Button>
 
-        <Flex align="center" gap={2}>
-          <Text fontSize="sm" fontWeight="medium" color="gray.600">
-            {offset + 1} - {last}
+        <HStack spacing={4}>
+          <Text fontSize="sm" color="brand.textMuted">
+            <Text as="span" fontWeight="600" color="brand.text">
+              {offset + 1} - {last}
+            </Text>
+            {" "}/ {total} 件
           </Text>
-          <Text fontSize="sm" color="gray.500">
-            /
-          </Text>
-          <Text fontSize="sm" fontWeight="bold" color="gray.700">
-            {total}
-          </Text>
-          <Text fontSize="xs" color="gray.500" ml={2}>
-            (ページ {currentPage} / {totalPages})
-          </Text>
-        </Flex>
+          <Box
+            bg="brand.cream"
+            px={3}
+            py={1}
+          >
+            <Text fontSize="xs" fontWeight="600" color="brand.textMuted" letterSpacing="0.05em">
+              PAGE {currentPage} / {totalPages}
+            </Text>
+          </Box>
+        </HStack>
 
         <Button
           rightIcon={<Icon as={FiChevronRight} />}
-          isDisabled={last == total}
+          isDisabled={last === total}
           onClick={() => replace(createPageURL(limit, last))}
-          colorScheme="blue"
           variant="outline"
-          size="md"
-          borderRadius="lg"
+          size="sm"
+          borderColor="brand.primary"
+          color="brand.primary"
           _hover={{
+            bg: "brand.primary",
+            color: "white",
             transform: "translateX(2px)",
+          }}
+          _disabled={{
+            opacity: 0.4,
+            cursor: "not-allowed",
+            _hover: {
+              bg: "transparent",
+              transform: "none",
+            },
           }}
           transition="all 0.2s"
         >

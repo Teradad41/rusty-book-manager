@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Table,
   Thead,
@@ -8,7 +10,6 @@ import {
   TableContainer,
   Card,
   CardBody,
-  useColorModeValue,
   Badge,
 } from "@chakra-ui/react";
 import type { User } from "../_types/user";
@@ -26,67 +27,116 @@ const UserTable: FC<UserTableProps> = ({
   currentUser,
 }: UserTableProps) => {
   const isAdmin = currentUser.role === "Admin";
-  const cardBg = useColorModeValue("white", "gray.700");
-  const borderColor = useColorModeValue("gray.200", "gray.600");
-  const tableHeadBg = useColorModeValue("gray.50", "gray.600");
-  const rowHoverBg = useColorModeValue("gray.50", "gray.600");
 
   return (
     <Card
-      bg={cardBg}
-      borderColor={borderColor}
-      borderWidth="1px"
-      borderRadius="xl"
+      bg="white"
+      border="1px solid"
+      borderColor="brand.paper"
+      borderRadius="none"
       overflow="hidden"
-      shadow="lg"
     >
       <CardBody p={0}>
         <TableContainer>
           <Table variant="simple" size="md">
-            <Thead bg={tableHeadBg}>
+            <Thead bg="brand.cream">
               <Tr>
-                <Th fontSize="sm" fontWeight="bold">
+                <Th
+                  fontSize="xs"
+                  fontWeight="600"
+                  letterSpacing="0.1em"
+                  textTransform="uppercase"
+                  color="brand.textMuted"
+                  borderBottomWidth="2px"
+                  borderColor="brand.paper"
+                  py={4}
+                >
                   名前
                 </Th>
-                <Th fontSize="sm" fontWeight="bold">
+                <Th
+                  fontSize="xs"
+                  fontWeight="600"
+                  letterSpacing="0.1em"
+                  textTransform="uppercase"
+                  color="brand.textMuted"
+                  borderBottomWidth="2px"
+                  borderColor="brand.paper"
+                  py={4}
+                >
                   メールアドレス
                 </Th>
-                <Th fontSize="sm" fontWeight="bold">
+                <Th
+                  fontSize="xs"
+                  fontWeight="600"
+                  letterSpacing="0.1em"
+                  textTransform="uppercase"
+                  color="brand.textMuted"
+                  borderBottomWidth="2px"
+                  borderColor="brand.paper"
+                  py={4}
+                >
                   ロール
                 </Th>
-                {isAdmin && <Th></Th>}
+                {isAdmin && (
+                  <Th
+                    borderBottomWidth="2px"
+                    borderColor="brand.paper"
+                    py={4}
+                  />
+                )}
               </Tr>
             </Thead>
             <Tbody>
               {users.map((user) => (
                 <Tr
                   key={user.id}
-                  _hover={{ bg: rowHoverBg }}
+                  _hover={{ bg: "brand.cream" }}
                   transition="background 0.2s"
                 >
-                  <Td fontWeight="medium">
+                  <Td
+                    fontWeight="500"
+                    borderColor="brand.paper"
+                    py={4}
+                  >
                     {user.name}
                     {user.id === currentUser.id && (
-                      <Badge colorScheme="blue" ml={2} fontSize="xs">
+                      <Badge
+                        bg="brand.primary"
+                        color="white"
+                        ml={2}
+                        fontSize="2xs"
+                      >
                         あなた
                       </Badge>
                     )}
                   </Td>
-                  <Td color="gray.600">{user.email}</Td>
-                  <Td>
+                  <Td
+                    color="brand.textMuted"
+                    borderColor="brand.paper"
+                    py={4}
+                  >
+                    {user.email}
+                  </Td>
+                  <Td borderColor="brand.paper" py={4}>
                     {isAdmin ? (
                       <UpdateUserRoleSelector
                         user={user}
                         isCurrentUser={user.id === currentUser.id}
                       />
                     ) : (
-                      <Badge colorScheme={user.role === "Admin" ? "purple" : "gray"}>
+                      <Badge
+                        bg={user.role === "Admin" ? "brand.accent" : "brand.cream"}
+                        color={user.role === "Admin" ? "white" : "brand.text"}
+                        fontSize="2xs"
+                        px={2}
+                        py={1}
+                      >
                         {user.role}
                       </Badge>
                     )}
                   </Td>
                   {isAdmin && (
-                    <Td>
+                    <Td borderColor="brand.paper" py={4}>
                       {user.id !== currentUser.id && (
                         <DeleteUserButton user={user} />
                       )}

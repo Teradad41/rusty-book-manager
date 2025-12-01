@@ -1,3 +1,5 @@
+"use client";
+
 import { Select, useToast } from "@chakra-ui/react";
 import useLocalStorageState from "use-local-storage-state";
 import { ACCESS_TOKEN_KEY } from "./auth";
@@ -27,24 +29,24 @@ const UpdateUserRoleSelector: FC<UpdateUserRoleSelectorProps> = ({
     });
 
     if (res.ok) {
-      if (res.ok) {
-        toast({
-          title: "ユーザーのロールを更新しました",
-          description: `${user.name}のロールを${role}に変更しました`,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-        });
-        mutate(["/api/v1/users", accessToken]);
-      } else {
-        toast({
-          title: "ユーザーのロールを更新できませんでした",
-          description: "サーバーからエラー応答が返却されました。",
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-        });
-      }
+      toast({
+        title: "ユーザーのロールを更新しました",
+        description: `${user.name}のロールを${role}に変更しました`,
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "top-right",
+      });
+      mutate(["/api/v1/users", accessToken]);
+    } else {
+      toast({
+        title: "ユーザーのロールを更新できませんでした",
+        description: "サーバーからエラー応答が返却されました。",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top-right",
+      });
     }
   };
 
@@ -55,15 +57,30 @@ const UpdateUserRoleSelector: FC<UpdateUserRoleSelectorProps> = ({
       onChange={(e) => {
         handleUpdateRole(e.target.value);
       }}
+      size="sm"
+      borderRadius="none"
+      borderColor="brand.paper"
+      borderWidth="2px"
+      bg="white"
+      _hover={{
+        borderColor: isCurrentUser ? "brand.paper" : "brand.textLight",
+      }}
+      _focus={{
+        borderColor: "brand.primary",
+        boxShadow: "none",
+      }}
+      _disabled={{
+        opacity: 0.6,
+        cursor: "not-allowed",
+      }}
+      fontWeight="500"
+      fontSize="sm"
     >
       {["Admin", "User"].map((r) => (
         <option
           key={`${user.id}-${r}`}
-          {...{
-            value: r,
-
-            label: r,
-          }}
+          value={r}
+          label={r}
         />
       ))}
     </Select>

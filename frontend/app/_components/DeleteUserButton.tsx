@@ -1,3 +1,5 @@
+"use client";
+
 import { FC, useRef } from "react";
 import { ACCESS_TOKEN_KEY } from "./auth";
 import {
@@ -26,7 +28,7 @@ const DeleteUserButton: FC<DeleteUserButtonProps> = ({
   user,
 }: DeleteUserButtonProps) => {
   const [accessToken] = useLocalStorageState(ACCESS_TOKEN_KEY);
-  const { isOpen, onOpen, onClose } = useDisclosure({ id: "delete-book" });
+  const { isOpen, onOpen, onClose } = useDisclosure({ id: "delete-user" });
   const toast = useToast();
   const cancelRef = useRef(null);
   const { mutate } = useSWRConfig();
@@ -44,6 +46,7 @@ const DeleteUserButton: FC<DeleteUserButtonProps> = ({
         status: "success",
         duration: 5000,
         isClosable: true,
+        position: "top-right",
       });
       onClose();
       mutate(["/api/v1/users", accessToken]);
@@ -54,6 +57,7 @@ const DeleteUserButton: FC<DeleteUserButtonProps> = ({
         status: "error",
         duration: 5000,
         isClosable: true,
+        position: "top-right",
       });
     }
   };
@@ -61,10 +65,17 @@ const DeleteUserButton: FC<DeleteUserButtonProps> = ({
   return (
     <>
       <IconButton
-        aria-label="delete user"
-        id="delete-user"
+        aria-label="ユーザーを削除"
         icon={<DeleteIcon />}
         onClick={onOpen}
+        variant="ghost"
+        size="sm"
+        color="brand.textMuted"
+        _hover={{
+          bg: "red.50",
+          color: "red.500",
+        }}
+        transition="all 0.2s"
       />
 
       <AlertDialog
@@ -72,16 +83,40 @@ const DeleteUserButton: FC<DeleteUserButtonProps> = ({
         leastDestructiveRef={cancelRef}
         onClose={onClose}
       >
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader fontWeight="bold"></AlertDialogHeader>
-            <AlertDialogBody>{`ユーザー「${user.name}」を削除しますか？`}</AlertDialogBody>
-            <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose}>
-                Cancel
+        <AlertDialogOverlay bg="blackAlpha.600">
+          <AlertDialogContent borderRadius="none" mx={4}>
+            <AlertDialogHeader
+              fontFamily="heading"
+              fontWeight="400"
+              fontSize="2xl"
+              pt={8}
+              pb={2}
+            >
+              ユーザーの削除
+            </AlertDialogHeader>
+            <AlertDialogBody color="brand.textMuted" pb={6}>
+              ユーザー「{user.name}」を削除しますか？
+              <br />
+              この操作は取り消せません。
+            </AlertDialogBody>
+            <AlertDialogFooter pb={8}>
+              <Button
+                ref={cancelRef}
+                onClick={onClose}
+                variant="ghost"
+              >
+                キャンセル
               </Button>
-              <Button colorScheme="red" onClick={handleDelete} ml={3}>
-                Delete
+              <Button
+                bg="brand.secondary"
+                color="white"
+                onClick={handleDelete}
+                ml={3}
+                _hover={{
+                  bg: "brand.secondaryDark",
+                }}
+              >
+                削除する
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>

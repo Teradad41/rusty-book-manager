@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Table,
   Thead,
@@ -9,10 +11,11 @@ import {
   Card,
   CardBody,
   Heading,
-  useColorModeValue,
   Badge,
   Icon,
   Flex,
+  Text,
+  Box,
 } from "@chakra-ui/react";
 import { FiClock } from "react-icons/fi";
 import { useBookCheckouts } from "../_contexts/checkout";
@@ -27,70 +30,127 @@ const CheckoutHistory: FC<CheckoutHistoryProps> = ({
 }: CheckoutHistoryProps) => {
   const { checkouts } = useBookCheckouts(bookId);
 
-  const cardBg = useColorModeValue("white", "gray.700");
-  const borderColor = useColorModeValue("gray.200", "gray.600");
-  const rowHoverBg = useColorModeValue("gray.50", "gray.600");
-
   return (
     <Card
-      bg={cardBg}
-      borderColor={borderColor}
-      borderWidth="1px"
-      borderRadius="xl"
+      bg="white"
+      border="1px solid"
+      borderColor="brand.paper"
+      borderRadius="none"
       overflow="hidden"
-      shadow="lg"
     >
-      <CardBody>
-        <Flex align="center" gap={2} mb={4}>
-          <Icon as={FiClock} color="blue.500" boxSize={6} />
-          <Heading as="h3" size="lg">
+      <CardBody p={{ base: 6, md: 8 }}>
+        <Flex align="center" gap={3} mb={6}>
+          <Icon as={FiClock} color="brand.accent" boxSize={5} />
+          <Heading
+            as="h3"
+            fontSize="lg"
+            fontFamily="heading"
+            fontWeight="400"
+          >
             貸出履歴
           </Heading>
           {checkouts && checkouts.length > 0 && (
-            <Badge colorScheme="blue" ml={2}>
+            <Badge
+              bg="brand.cream"
+              color="brand.text"
+              fontSize="xs"
+              px={2}
+              py={1}
+            >
               {checkouts.length} 件
             </Badge>
           )}
         </Flex>
 
-        <TableContainer>
-          <Table variant="simple" size="md">
-            <Thead>
-              <Tr>
-                <Th fontSize="sm" fontWeight="bold">
-                  貸出日
-                </Th>
-                <Th fontSize="sm" fontWeight="bold">
-                  返却日
-                </Th>
-                <Th fontSize="sm" fontWeight="bold">
-                  貸出者
-                </Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {checkouts?.map((co) => (
-                <Tr
-                  key={co.id}
-                  _hover={{ bg: rowHoverBg }}
-                  transition="background 0.2s"
-                >
-                  <Td>{co.checkedOutAt}</Td>
-                  <Td>
-                    {co.returnedAt ? (
-                      co.returnedAt
-                    ) : (
-                      <Badge colorScheme="orange">貸出中</Badge>
-                    )}
-                  </Td>
-                  <Td>
-                    {co.checkedOutBy.name}
-                  </Td>
+        {checkouts && checkouts.length > 0 ? (
+          <TableContainer>
+            <Table variant="simple" size="md">
+              <Thead>
+                <Tr>
+                  <Th
+                    fontSize="xs"
+                    fontWeight="600"
+                    letterSpacing="0.1em"
+                    textTransform="uppercase"
+                    color="brand.textMuted"
+                    borderBottomWidth="2px"
+                    borderColor="brand.paper"
+                  >
+                    貸出日
+                  </Th>
+                  <Th
+                    fontSize="xs"
+                    fontWeight="600"
+                    letterSpacing="0.1em"
+                    textTransform="uppercase"
+                    color="brand.textMuted"
+                    borderBottomWidth="2px"
+                    borderColor="brand.paper"
+                  >
+                    返却日
+                  </Th>
+                  <Th
+                    fontSize="xs"
+                    fontWeight="600"
+                    letterSpacing="0.1em"
+                    textTransform="uppercase"
+                    color="brand.textMuted"
+                    borderBottomWidth="2px"
+                    borderColor="brand.paper"
+                  >
+                    貸出者
+                  </Th>
                 </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        </TableContainer>
+              </Thead>
+              <Tbody>
+                {checkouts?.map((co) => (
+                  <Tr
+                    key={co.id}
+                    _hover={{ bg: "brand.cream" }}
+                    transition="background 0.2s"
+                  >
+                    <Td
+                      fontFamily="mono"
+                      fontSize="sm"
+                      borderColor="brand.paper"
+                    >
+                      {co.checkedOutAt}
+                    </Td>
+                    <Td borderColor="brand.paper">
+                      {co.returnedAt ? (
+                        <Text fontFamily="mono" fontSize="sm">
+                          {co.returnedAt}
+                        </Text>
+                      ) : (
+                        <Badge
+                          bg="brand.secondary"
+                          color="white"
+                          fontSize="2xs"
+                        >
+                          貸出中
+                        </Badge>
+                      )}
+                    </Td>
+                    <Td
+                      fontWeight="500"
+                      borderColor="brand.paper"
+                    >
+                      {co.checkedOutBy.name}
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </TableContainer>
+        ) : (
+          <Box
+            py={8}
+            textAlign="center"
+            color="brand.textMuted"
+          >
+            <Text>まだ貸出履歴はありません</Text>
+          </Box>
+        )}
       </CardBody>
     </Card>
   );

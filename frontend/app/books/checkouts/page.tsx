@@ -11,72 +11,110 @@ import {
   Heading,
   Text,
   Badge,
-  useColorModeValue,
   SimpleGrid,
 } from "@chakra-ui/react";
+import { keyframes } from "@emotion/react";
+
+const fadeInUp = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
 
 export default function CheckedOutBookList() {
   const { checkouts } = useCheckouts();
   const { currentUser } = useCurrentUser();
 
-  const bgGradient = useColorModeValue(
-    "linear(to-br, blue.50, purple.50)",
-    "linear(to-br, gray.900, gray.800)"
-  );
-  const emptyStateBg = useColorModeValue("white", "gray.700");
-
   return (
     <>
-      <Header></Header>
-      <Box minH="100vh" bgGradient={bgGradient}>
-        <Container maxW="container.xl" py={8}>
-          <Box mb={8} textAlign="center">
-            <Badge colorScheme="orange" fontSize="sm" mb={2} px={3} py={1} borderRadius="full">
+      <Header />
+
+      {/* Hero Section */}
+      <Box
+        bg="brand.secondary"
+        color="white"
+        py={{ base: 10, md: 14 }}
+        position="relative"
+        overflow="hidden"
+      >
+        <Box
+          position="absolute"
+          top="0"
+          right="0"
+          w="30%"
+          h="100%"
+          bgGradient="linear(to-bl, brand.accent, transparent)"
+          opacity={0.2}
+        />
+
+        <Container maxW="1400px" position="relative">
+          <Box animation={`${fadeInUp} 0.6s ease-out`}>
+            <Badge
+              bg="white"
+              color="brand.secondary"
+              fontSize="xs"
+              px={3}
+              py={1}
+              mb={4}
+            >
               貸出管理
             </Badge>
             <Heading
               as="h1"
-              size="2xl"
-              mb={4}
-              bgGradient="linear(to-r, orange.500, red.500)"
-              bgClip="text"
+              fontSize={{ base: "3xl", md: "4xl", lg: "5xl" }}
+              fontFamily="heading"
+              fontWeight="400"
+              letterSpacing="-0.02em"
+              mb={3}
+              color="white"
             >
               全体の貸出状況
             </Heading>
             {checkouts && checkouts.length > 0 && (
-              <Text fontSize="lg" color="gray.600">
+              <Text fontSize="lg" color="whiteAlpha.900">
                 現在 {checkouts.length} 冊が全体で貸し出されています
               </Text>
             )}
           </Box>
+        </Container>
+      </Box>
 
+      {/* Main Content */}
+      <Box bg="brand.ivory" minH="50vh" py={12}>
+        <Container maxW="1400px">
           {checkouts && checkouts?.length > 0 ? (
-            <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
-              {checkouts?.map((co) => {
-                return (
-                  <Box key={co.id}>
-                    <BookTable
-                      key={co.book.id}
-                      data={co.book}
-                      appendButton={
-                        currentUser?.id === co.checkedOutBy.id ? (
-                          <ReturnButton checkout={co} />
-                        ) : undefined
-                      }
-                    />
-                  </Box>
-                );
-              })}
+            <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
+              {checkouts?.map((co, index) => (
+                <Box
+                  key={co.id}
+                  animation={`${fadeInUp} 0.5s ease-out ${index * 0.05}s backwards`}
+                >
+                  <BookTable
+                    data={co.book}
+                    appendButton={
+                      currentUser?.id === co.checkedOutBy.id ? (
+                        <ReturnButton checkout={co} />
+                      ) : undefined
+                    }
+                  />
+                </Box>
+              ))}
             </SimpleGrid>
           ) : (
             <Box
-              bg={emptyStateBg}
-              p={8}
-              borderRadius="xl"
+              bg="white"
+              p={12}
+              border="1px solid"
+              borderColor="brand.paper"
               textAlign="center"
-              shadow="lg"
+              animation={`${fadeInUp} 0.6s ease-out`}
             >
-              <Text color="gray.500" fontSize="lg">
+              <Text color="brand.textMuted" fontSize="lg">
                 現在全体で貸出中の蔵書はありません
               </Text>
             </Box>

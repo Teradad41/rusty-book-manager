@@ -15,16 +15,29 @@ import {
   Textarea,
   Box,
   Badge,
-  useColorModeValue,
   Card,
   CardBody,
   Icon,
   Flex,
+  Text,
 } from "@chakra-ui/react";
-import { FiSave, FiRefreshCw } from "react-icons/fi";
+import { keyframes } from "@emotion/react";
+import { FiSave, FiArrowLeft } from "react-icons/fi";
+import NextLink from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useLocalStorageState from "use-local-storage-state";
+
+const fadeInUp = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
 
 export default function EditBook({
   params,
@@ -35,14 +48,23 @@ export default function EditBook({
   const router = useRouter();
 
   const { book } = useBook(params.id);
-  const [input, setInput] = useState(
-    book ?? {
-      title: "",
-      isbn: "",
-      author: "",
-      description: "",
+  const [input, setInput] = useState({
+    title: "",
+    isbn: "",
+    author: "",
+    description: "",
+  });
+
+  useEffect(() => {
+    if (book) {
+      setInput({
+        title: book.title || "",
+        isbn: book.isbn || "",
+        author: book.author || "",
+        description: book.description || "",
+      });
     }
-  );
+  }, [book]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -64,133 +86,190 @@ export default function EditBook({
     }
   };
 
-  const bgGradient = useColorModeValue(
-    "linear(to-br, blue.50, purple.50)",
-    "linear(to-br, gray.900, gray.800)"
-  );
-  const cardBg = useColorModeValue("white", "gray.700");
-  const borderColor = useColorModeValue("gray.200", "gray.600");
-
   return (
     <>
-      <Header></Header>
-      <Box minH="100vh" bgGradient={bgGradient}>
-        <Container maxW="container.xl" py={8}>
-          <Box mb={8} textAlign="center">
-            <Badge colorScheme="blue" fontSize="sm" mb={2} px={3} py={1} borderRadius="full">
+      <Header />
+
+      {/* Hero Section */}
+      <Box
+        bg="brand.accent"
+        color="white"
+        py={{ base: 10, md: 14 }}
+        position="relative"
+        overflow="hidden"
+      >
+        <Box
+          position="absolute"
+          top="0"
+          right="0"
+          w="30%"
+          h="100%"
+          bgGradient="linear(to-bl, brand.primary, transparent)"
+          opacity={0.2}
+        />
+
+        <Container maxW="1400px" position="relative">
+          <Box animation={`${fadeInUp} 0.6s ease-out`}>
+            {/* Back link */}
+            <Flex
+              as={NextLink}
+              href={`/books/${params.id}`}
+              align="center"
+              gap={2}
+              color="whiteAlpha.700"
+              fontSize="sm"
+              mb={6}
+              _hover={{ color: "white" }}
+              transition="color 0.2s"
+              w="fit-content"
+            >
+              <Icon as={FiArrowLeft} color="inherit" />
+              <Text color="inherit">書籍詳細に戻る</Text>
+            </Flex>
+
+            <Badge
+              bg="white"
+              color="brand.accent"
+              fontSize="xs"
+              px={3}
+              py={1}
+              mb={4}
+            >
               編集モード
             </Badge>
             <Heading
               as="h1"
-              size="2xl"
-              mb={4}
-              bgGradient="linear(to-r, blue.500, cyan.500)"
-              bgClip="text"
+              fontSize={{ base: "3xl", md: "4xl", lg: "5xl" }}
+              fontFamily="heading"
+              fontWeight="400"
+              letterSpacing="-0.02em"
+              mb={3}
+              color="white"
             >
               蔵書を編集する
             </Heading>
+            <Text fontSize="lg" color="whiteAlpha.900">
+              {book?.title}
+            </Text>
           </Box>
+        </Container>
+      </Box>
 
-          <Container maxW="container.md">
-            <Card
-              bg={cardBg}
-              borderColor={borderColor}
-              borderWidth="1px"
-              borderRadius="xl"
-              overflow="hidden"
-              shadow="lg"
-            >
-              <CardBody p={8}>
-                <Stack spacing={6}>
-                  <FormControl id="isbn" isRequired>
-                    <FormLabel fontWeight="semibold">ISBN</FormLabel>
-                    <Flex gap={2}>
-                      <Input
-                        id="isbn"
-                        name="isbn"
-                        size="lg"
-                        borderRadius="lg"
-                        value={input.isbn}
-                        onChange={handleChange}
-                        placeholder="ISBN10またはISBN13を入力"
-                        focusBorderColor="blue.500"
-                      />
-                      <Button
-                        leftIcon={<Icon as={FiRefreshCw} />}
-                        colorScheme="gray"
-                        variant="outline"
-                        size="lg"
-                        borderRadius="lg"
-                      >
-                        自動入力
-                      </Button>
-                    </Flex>
-                  </FormControl>
+      {/* Main Content */}
+      <Box bg="brand.ivory" minH="50vh" py={12}>
+        <Container maxW="700px">
+          <Card
+            bg="white"
+            border="1px solid"
+            borderColor="brand.paper"
+            borderRadius="none"
+            animation={`${fadeInUp} 0.6s ease-out 0.1s backwards`}
+          >
+            <CardBody p={{ base: 6, md: 10 }}>
+              <Stack spacing={8}>
+                <FormControl id="isbn" isRequired>
+                  <FormLabel
+                    fontSize="xs"
+                    fontWeight="600"
+                    letterSpacing="0.1em"
+                    textTransform="uppercase"
+                    color="brand.textMuted"
+                  >
+                    ISBN
+                  </FormLabel>
+                  <Input
+                    name="isbn"
+                    size="lg"
+                    value={input.isbn}
+                    onChange={handleChange}
+                    placeholder="ISBN10またはISBN13を入力"
+                    fontFamily="mono"
+                  />
+                </FormControl>
 
-                  <FormControl id="title" isRequired>
-                    <FormLabel fontWeight="semibold">書籍タイトル</FormLabel>
-                    <Input
-                      id="title"
-                      name="title"
-                      size="lg"
-                      borderRadius="lg"
-                      value={input.title}
-                      onChange={handleChange}
-                      focusBorderColor="blue.500"
-                    />
-                  </FormControl>
+                <FormControl id="title" isRequired>
+                  <FormLabel
+                    fontSize="xs"
+                    fontWeight="600"
+                    letterSpacing="0.1em"
+                    textTransform="uppercase"
+                    color="brand.textMuted"
+                  >
+                    書籍タイトル
+                  </FormLabel>
+                  <Input
+                    name="title"
+                    size="lg"
+                    value={input.title}
+                    onChange={handleChange}
+                    placeholder="書籍タイトル"
+                  />
+                </FormControl>
 
-                  <FormControl id="author" isRequired>
-                    <FormLabel fontWeight="semibold">著者</FormLabel>
-                    <Input
-                      id="author"
-                      name="author"
-                      size="lg"
-                      borderRadius="lg"
-                      value={input.author}
-                      onChange={handleChange}
-                      focusBorderColor="blue.500"
-                    />
-                  </FormControl>
+                <FormControl id="author" isRequired>
+                  <FormLabel
+                    fontSize="xs"
+                    fontWeight="600"
+                    letterSpacing="0.1em"
+                    textTransform="uppercase"
+                    color="brand.textMuted"
+                  >
+                    著者
+                  </FormLabel>
+                  <Input
+                    name="author"
+                    size="lg"
+                    value={input.author}
+                    onChange={handleChange}
+                    placeholder="著者名"
+                  />
+                </FormControl>
 
-                  <FormControl id="description" isRequired>
-                    <FormLabel fontWeight="semibold">書籍概要</FormLabel>
-                    <Textarea
-                      id="description"
-                      name="description"
-                      size="lg"
-                      borderRadius="lg"
-                      value={input.description}
-                      onChange={handleChange}
-                      placeholder="1024文字以内で入力してください"
-                      rows={6}
-                      focusBorderColor="blue.500"
-                    />
-                  </FormControl>
+                <FormControl id="description" isRequired>
+                  <FormLabel
+                    fontSize="xs"
+                    fontWeight="600"
+                    letterSpacing="0.1em"
+                    textTransform="uppercase"
+                    color="brand.textMuted"
+                  >
+                    書籍概要
+                  </FormLabel>
+                  <Textarea
+                    name="description"
+                    size="lg"
+                    value={input.description}
+                    onChange={handleChange}
+                    placeholder="1024文字以内で入力してください"
+                    rows={6}
+                  />
+                </FormControl>
 
+                <Box pt={4}>
                   <Button
                     onClick={onClickSubmit}
                     size="lg"
+                    w="full"
                     leftIcon={<Icon as={FiSave} />}
-                    bgGradient="linear(to-r, blue.500, cyan.500)"
+                    bg="brand.primary"
                     color="white"
                     _hover={{
-                      bgGradient: "linear(to-r, blue.600, cyan.600)",
+                      bg: "brand.primaryLight",
                       transform: "translateY(-2px)",
-                      boxShadow: "lg",
+                      boxShadow: "0 10px 30px rgba(28, 69, 50, 0.3)",
                     }}
                     _active={{
                       transform: "translateY(0)",
                     }}
-                    transition="all 0.2s"
-                    borderRadius="lg"
+                    transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
+                    py={7}
                   >
                     蔵書を更新する
                   </Button>
-                </Stack>
-              </CardBody>
-            </Card>
-          </Container>
+                </Box>
+              </Stack>
+            </CardBody>
+          </Card>
         </Container>
       </Box>
     </>

@@ -15,15 +15,16 @@ import {
   useToast,
   Box,
   Badge,
-  useColorModeValue,
   Card,
   CardBody,
   Stack,
   Icon,
+  Text,
 } from "@chakra-ui/react";
+import { keyframes } from "@emotion/react";
 import { useState } from "react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import { FiLock } from "react-icons/fi";
+import { FiLock, FiShield } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import useLocalStorageState from "use-local-storage-state";
@@ -33,6 +34,17 @@ type UserPasswordInput = {
   currentPassword: string;
   newPassword: string;
 };
+
+const fadeInUp = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
 
 export default function UpdateUserPassword() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
@@ -61,6 +73,7 @@ export default function UpdateUserPassword() {
         status: "success",
         duration: 5000,
         isClosable: true,
+        position: "top-right",
       });
       router.push("/");
     } else {
@@ -71,139 +84,175 @@ export default function UpdateUserPassword() {
         status: "error",
         duration: 5000,
         isClosable: true,
+        position: "top-right",
       });
     }
   };
 
-  const bgGradient = useColorModeValue(
-    "linear(to-br, blue.50, purple.50)",
-    "linear(to-br, gray.900, gray.800)"
-  );
-  const cardBg = useColorModeValue("white", "gray.700");
-  const borderColor = useColorModeValue("gray.200", "gray.600");
-
   return (
     <>
-      <Header></Header>
-      <Box minH="100vh" bgGradient={bgGradient}>
-        <Container maxW="container.xl" py={8}>
-          <Box mb={8} textAlign="center">
-            <Badge colorScheme="red" fontSize="sm" mb={2} px={3} py={1} borderRadius="full">
+      <Header />
+
+      {/* Hero Section */}
+      <Box
+        bg="brand.text"
+        color="white"
+        py={{ base: 10, md: 14 }}
+        position="relative"
+        overflow="hidden"
+      >
+        <Box
+          position="absolute"
+          top="0"
+          right="0"
+          w="30%"
+          h="100%"
+          bgGradient="linear(to-bl, brand.secondary, transparent)"
+          opacity={0.2}
+        />
+
+        <Container maxW="1400px" position="relative">
+          <Box animation={`${fadeInUp} 0.6s ease-out`}>
+            <Badge
+              bg="white"
+              color="brand.text"
+              fontSize="xs"
+              px={3}
+              py={1}
+              mb={4}
+            >
+              <Icon as={FiShield} mr={1} />
               セキュリティ
             </Badge>
             <Heading
               as="h1"
-              size="2xl"
-              mb={4}
-              bgGradient="linear(to-r, red.500, pink.500)"
-              bgClip="text"
+              fontSize={{ base: "3xl", md: "4xl", lg: "5xl" }}
+              fontFamily="heading"
+              fontWeight="400"
+              letterSpacing="-0.02em"
+              mb={3}
+              color="white"
             >
               パスワード変更
             </Heading>
+            <Text fontSize="lg" color="whiteAlpha.800">
+              アカウントのセキュリティを保護するために、定期的なパスワード変更をお勧めします
+            </Text>
           </Box>
+        </Container>
+      </Box>
 
-          <Container maxW="container.md">
-            <Card
-              bg={cardBg}
-              borderColor={borderColor}
-              borderWidth="1px"
-              borderRadius="xl"
-              overflow="hidden"
-              shadow="lg"
-            >
-              <CardBody p={8}>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                  <Stack spacing={6}>
-                    <FormControl isInvalid={!!errors.currentPassword} isRequired>
-                      <FormLabel htmlFor="currentPassword" fontWeight="semibold">
-                        現在のパスワード
-                      </FormLabel>
-                      <InputGroup size="lg">
-                        <Input
-                          id="currentPassword"
-                          type={showCurrentPassword ? "text" : "password"}
-                          borderRadius="lg"
-                          placeholder="現在のパスワードを入力してください"
-                          focusBorderColor="blue.500"
-                          {...register("currentPassword", {
-                            required: "入力必須です",
-                          })}
-                        />
-                        <InputRightElement h="full">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() =>
-                              setShowCurrentPassword(
-                                (showCurrentPassword) => !showCurrentPassword
-                              )
-                            }
-                          >
-                            {showCurrentPassword ? <ViewIcon /> : <ViewOffIcon />}
-                          </Button>
-                        </InputRightElement>
-                      </InputGroup>
-                      <FormErrorMessage>
-                        {errors.currentPassword?.message}
-                      </FormErrorMessage>
-                    </FormControl>
+      {/* Main Content */}
+      <Box bg="brand.ivory" minH="50vh" py={12}>
+        <Container maxW="600px">
+          <Card
+            bg="white"
+            border="1px solid"
+            borderColor="brand.paper"
+            borderRadius="none"
+            animation={`${fadeInUp} 0.6s ease-out 0.1s backwards`}
+          >
+            <CardBody p={{ base: 6, md: 10 }}>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <Stack spacing={8}>
+                  <FormControl isInvalid={!!errors.currentPassword} isRequired>
+                    <FormLabel
+                      fontSize="xs"
+                      fontWeight="600"
+                      letterSpacing="0.1em"
+                      textTransform="uppercase"
+                      color="brand.textMuted"
+                    >
+                      現在のパスワード
+                    </FormLabel>
+                    <InputGroup size="lg">
+                      <Input
+                        type={showCurrentPassword ? "text" : "password"}
+                        placeholder="現在のパスワードを入力"
+                        {...register("currentPassword", {
+                          required: "入力必須です",
+                        })}
+                      />
+                      <InputRightElement h="full">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() =>
+                            setShowCurrentPassword(!showCurrentPassword)
+                          }
+                          color="brand.textMuted"
+                          _hover={{ color: "brand.primary" }}
+                        >
+                          {showCurrentPassword ? <ViewIcon /> : <ViewOffIcon />}
+                        </Button>
+                      </InputRightElement>
+                    </InputGroup>
+                    <FormErrorMessage>
+                      {errors.currentPassword?.message}
+                    </FormErrorMessage>
+                  </FormControl>
 
-                    <FormControl isInvalid={!!errors.newPassword} isRequired>
-                      <FormLabel htmlFor="newPassword" fontWeight="semibold">
-                        新しいパスワード
-                      </FormLabel>
-                      <InputGroup size="lg">
-                        <Input
-                          id="newPassword"
-                          type={showNewPassword ? "text" : "password"}
-                          borderRadius="lg"
-                          placeholder="新しいパスワードを入力してください"
-                          focusBorderColor="blue.500"
-                          {...register("newPassword", {
-                            required: "入力必須です",
-                          })}
-                        />
-                        <InputRightElement h="full">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() =>
-                              setShowNewPassword((showNewPassword) => !showNewPassword)
-                            }
-                          >
-                            {showNewPassword ? <ViewIcon /> : <ViewOffIcon />}
-                          </Button>
-                        </InputRightElement>
-                      </InputGroup>
-                      <FormErrorMessage>{errors.newPassword?.message}</FormErrorMessage>
-                    </FormControl>
+                  <FormControl isInvalid={!!errors.newPassword} isRequired>
+                    <FormLabel
+                      fontSize="xs"
+                      fontWeight="600"
+                      letterSpacing="0.1em"
+                      textTransform="uppercase"
+                      color="brand.textMuted"
+                    >
+                      新しいパスワード
+                    </FormLabel>
+                    <InputGroup size="lg">
+                      <Input
+                        type={showNewPassword ? "text" : "password"}
+                        placeholder="新しいパスワードを入力"
+                        {...register("newPassword", {
+                          required: "入力必須です",
+                        })}
+                      />
+                      <InputRightElement h="full">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setShowNewPassword(!showNewPassword)}
+                          color="brand.textMuted"
+                          _hover={{ color: "brand.primary" }}
+                        >
+                          {showNewPassword ? <ViewIcon /> : <ViewOffIcon />}
+                        </Button>
+                      </InputRightElement>
+                    </InputGroup>
+                    <FormErrorMessage>{errors.newPassword?.message}</FormErrorMessage>
+                  </FormControl>
 
+                  <Box pt={4}>
                     <Button
                       type="submit"
                       size="lg"
+                      w="full"
                       leftIcon={<Icon as={FiLock} />}
-                      bgGradient="linear(to-r, red.500, pink.500)"
+                      bg="brand.primary"
                       color="white"
+                      isLoading={isSubmitting}
+                      loadingText="変更中..."
                       _hover={{
-                        bgGradient: "linear(to-r, red.600, pink.600)",
+                        bg: "brand.primaryLight",
                         transform: "translateY(-2px)",
-                        boxShadow: "lg",
+                        boxShadow: "0 10px 30px rgba(28, 69, 50, 0.3)",
                       }}
                       _active={{
                         transform: "translateY(0)",
                       }}
-                      transition="all 0.2s"
-                      isLoading={isSubmitting}
-                      loadingText="変更中..."
-                      borderRadius="lg"
+                      transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
+                      py={7}
                     >
                       パスワードを変更
                     </Button>
-                  </Stack>
-                </form>
-              </CardBody>
-            </Card>
-          </Container>
+                  </Box>
+                </Stack>
+              </form>
+            </CardBody>
+          </Card>
         </Container>
       </Box>
     </>

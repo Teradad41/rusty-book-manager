@@ -6,9 +6,10 @@ import { useRouter } from "next/navigation";
 import useLocalStorageState from "use-local-storage-state";
 import { post, put } from "../_lib/client";
 import { useCurrentUser } from "../_contexts/user";
-import { Button } from "@chakra-ui/react";
+import { Button, Icon } from "@chakra-ui/react";
 import { useSWRConfig } from "swr";
 import { FC } from "react";
+import { FiBookOpen, FiCornerUpLeft, FiClock } from "react-icons/fi";
 
 export type CheckoutButtonProps = {
   book: Book;
@@ -51,16 +52,59 @@ const CheckoutButton: FC<CheckoutButtonProps> = ({
   };
 
   return !book.checkout ? (
-    <Button colorScheme="blue" size="lg" onClick={onClickCheckoutSubmit}>
+    <Button
+      w="full"
+      size="lg"
+      bg="brand.primary"
+      color="white"
+      leftIcon={<Icon as={FiBookOpen} />}
+      onClick={onClickCheckoutSubmit}
+      _hover={{
+        bg: "brand.primaryLight",
+        transform: "translateY(-2px)",
+        boxShadow: "0 10px 30px rgba(28, 69, 50, 0.3)",
+      }}
+      _active={{
+        transform: "translateY(0)",
+      }}
+      transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
+      py={7}
+    >
       この書籍を借りる
     </Button>
   ) : book.checkout?.checkedOutBy.id === currentUser?.id ? (
-    <Button colorScheme="yellow" size="lg" onClick={onClickReturningSubmit}>
+    <Button
+      w="full"
+      size="lg"
+      bg="brand.accent"
+      color="white"
+      leftIcon={<Icon as={FiCornerUpLeft} />}
+      onClick={onClickReturningSubmit}
+      _hover={{
+        bg: "brand.accentLight",
+        transform: "translateY(-2px)",
+        boxShadow: "0 10px 30px rgba(182, 141, 64, 0.3)",
+      }}
+      _active={{
+        transform: "translateY(0)",
+      }}
+      transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
+      py={7}
+    >
       この書籍を返却する
     </Button>
   ) : (
-    <Button isDisabled colorScheme="red" size="lg">
-      {`${book.checkout?.checkedOutBy.name}に貸出中`}
+    <Button
+      w="full"
+      size="lg"
+      isDisabled
+      bg="brand.paper"
+      color="brand.textMuted"
+      leftIcon={<Icon as={FiClock} />}
+      py={7}
+      cursor="not-allowed"
+    >
+      {`${book.checkout?.checkedOutBy.name}さんが貸出中`}
     </Button>
   );
 };
