@@ -7,6 +7,7 @@ use crate::model::{
     list::PaginatedList,
 };
 
+#[mockall::automock]
 #[async_trait]
 pub trait BookRepository: Send + Sync {
     async fn create(&self, event: CreateBook, requested_user: UserId) -> AppResult<()>;

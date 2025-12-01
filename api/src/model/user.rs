@@ -175,7 +175,7 @@ impl From<UpdateUserRoleRequestWithUserId> for UpdateUserRole {
 }
 
 /// 蔵書の所有者情報
-#[derive(Debug, Serialize, ToSchema)]
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct BookOwner {
     /// 所有者のユーザーID

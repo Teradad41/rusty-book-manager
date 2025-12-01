@@ -9,6 +9,7 @@ use crate::model::{
     },
 };
 
+#[mockall::automock]
 #[async_trait]
 pub trait UserRepository: Send + Sync {
     async fn find_current_user(&self, current_user_id: UserId) -> AppResult<Option<User>>;

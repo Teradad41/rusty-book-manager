@@ -138,7 +138,7 @@ impl From<BookListQuery> for BookListOptions {
 }
 
 /// 蔵書の貸出情報
-#[derive(Debug, Serialize, ToSchema)]
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct BookCheckoutResponse {
     /// 貸出ID
@@ -167,7 +167,7 @@ impl From<Checkout> for BookCheckoutResponse {
 }
 
 /// 蔵書詳細レスポンス
-#[derive(Debug, Serialize, ToSchema)]
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct BookResponse {
     /// 蔵書ID
@@ -216,7 +216,7 @@ impl From<Book> for BookResponse {
 }
 
 /// ページネーション付き蔵書一覧レスポンス
-#[derive(Debug, Serialize, ToSchema)]
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct PaginatedBookResponse {
     /// 総件数

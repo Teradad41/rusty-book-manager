@@ -63,6 +63,8 @@ axum-extra = { version = "0.12.2", features = [
 chrono = { version = "0.4.42", features = ["serde"], default-features = false }
 utoipa = { version = "5.4.0", features = ["axum_extras", "uuid", "chrono"] }
 utoipa-redoc = { version = "6.0.0", features = ["axum"] }
+mockall = "0.14.0"
+tokio-stream = "0.1.17"
 
 [dependencies]
 adapter.workspace = true
