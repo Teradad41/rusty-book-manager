@@ -146,7 +146,7 @@ pub async fn update_book(
 ) -> AppResult<StatusCode> {
     req.validate()?;
 
-    let update_book = UpdateBookRequestWithIds::new(book_id, user.id(), req);
+    let update_book = UpdateBookRequestWithIds::new(book_id, user.id(), user.is_admin(), req);
 
     registry
         .book_repository()
@@ -182,6 +182,7 @@ pub async fn delete_book(
     let delete_book = DeleteBook {
         book_id,
         requested_user: user.id(),
+        is_admin: user.is_admin(),
     };
 
     registry

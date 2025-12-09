@@ -39,12 +39,14 @@ pub struct UpdateBook {
     pub isbn: String,
     pub description: String,
     pub requested_user: UserId,
+    pub is_admin: bool,
 }
 
 #[derive(Debug)]
 pub struct DeleteBook {
     pub book_id: BookId,
     pub requested_user: UserId,
+    pub is_admin: bool,
 }
 
 #[derive(Debug)]

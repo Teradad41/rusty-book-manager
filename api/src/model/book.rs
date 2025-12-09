@@ -83,13 +83,14 @@ pub struct UpdateBookRequest {
 }
 
 #[derive(new)]
-pub struct UpdateBookRequestWithIds(BookId, UserId, UpdateBookRequest);
+pub struct UpdateBookRequestWithIds(BookId, UserId, bool, UpdateBookRequest);
 
 impl From<UpdateBookRequestWithIds> for UpdateBook {
     fn from(value: UpdateBookRequestWithIds) -> Self {
         let UpdateBookRequestWithIds(
             book_id,
             user_id,
+            is_admin,
             UpdateBookRequest {
                 title,
                 author,
@@ -105,6 +106,7 @@ impl From<UpdateBookRequestWithIds> for UpdateBook {
             isbn,
             description,
             requested_user: user_id,
+            is_admin,
         }
     }
 }

@@ -62,7 +62,8 @@ export default function Page({ params }: Readonly<{ params: { id: string } }>) {
   const { book } = useBook(params.id);
   const { currentUser } = useCurrentUser();
 
-  const isOwner = book?.owner?.id === currentUser?.id;
+  // 所有者か管理者のみ更新・削除ができる
+  const isEditable = book?.owner?.id === currentUser?.id || currentUser?.role === "Admin";
 
   const onClickDeleteSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -337,15 +338,13 @@ export default function Page({ params }: Readonly<{ params: { id: string } }>) {
 
                       <ButtonGroup spacing={3} w="full">
                         <Button
-                          as={isOwner ? NextLink : undefined}
-                          href={isOwner ? `/books/${params.id}/edit` : undefined}
+                          as={isEditable ? NextLink : undefined}
+                          href={isEditable ? `/books/${params.id}/edit` : undefined}
                           leftIcon={<EditIcon />}
                           variant="outline"
                           flex={1}
-                          isDisabled={!isOwner}
-                          title={
-                            !isOwner ? "この本の所有者のみ編集できます" : undefined
-                          }
+                          isDisabled={!isEditable}
+                          title={!isEditable ? "この本の所有者もしくは管理者のみ編集できます" : undefined}
                         >
                           編集
                         </Button>
@@ -354,29 +353,27 @@ export default function Page({ params }: Readonly<{ params: { id: string } }>) {
                           variant="outline"
                           flex={1}
                           onClick={onOpenDelete}
-                          isDisabled={!isOwner}
+                          isDisabled={!isEditable}
                           borderColor="brand.secondary"
                           color="brand.secondary"
                           _hover={{
                             bg: "brand.secondary",
                             color: "white",
                           }}
-                          title={
-                            !isOwner ? "この本の所有者のみ削除できます" : undefined
-                          }
+                          title={!isEditable ? "この本の所有者もしくは管理者のみ削除できます" : undefined}
                         >
                           削除
                         </Button>
                       </ButtonGroup>
 
-                      {!isOwner && (
+                      {!isEditable && (
                         <Text
                           fontSize="xs"
                           color="brand.textLight"
                           mt={3}
                           textAlign="center"
                         >
-                          ※ 編集・削除は所有者のみ可能です
+                          ※ 編集・削除は所有者および管理者のみ可能です
                         </Text>
                       )}
                     </Box>

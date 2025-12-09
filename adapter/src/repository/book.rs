@@ -155,13 +155,14 @@ impl BookRepository for BookRepositoryImpl {
                     isbn = $3,
                     description = $4
                 WHERE book_id = $5
-                AND user_id = $6
+                AND ($6 OR user_id = $7)
             "#,
             event.title,
             event.author,
             event.isbn,
             event.description,
             event.book_id as _,
+            event.is_admin,
             event.requested_user as _
         )
         .execute(self.db.inner_ref())
@@ -180,9 +181,10 @@ impl BookRepository for BookRepositoryImpl {
             r#"
                 DELETE FROM books
                 WHERE book_id = $1
-                AND user_id = $2
+                AND ($2 OR user_id = $3)
             "#,
             event.book_id as _,
+            event.is_admin,
             event.requested_user as _
         )
         .execute(self.db.inner_ref())

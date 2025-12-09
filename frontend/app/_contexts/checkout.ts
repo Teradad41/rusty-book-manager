@@ -2,7 +2,7 @@ import useSWR from "swr";
 import useLocalStorageState from "use-local-storage-state";
 import { ACCESS_TOKEN_KEY } from "../_components/auth";
 import { fetchWithToken } from "../_lib/client";
-import { Checkout } from "../_types/book";
+import type { Checkout } from "../_types/book";
 
 export const useMyCheckouts = () => {
   const [accessToken] = useLocalStorageState(ACCESS_TOKEN_KEY);
@@ -42,5 +42,3 @@ export const useBookCheckouts = (bookId: string) => {
     isError: error,
   };
 };
-
-
