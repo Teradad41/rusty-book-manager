@@ -319,6 +319,7 @@ export default function Login() {
                       />
                       <InputRightElement h="full">
                         <Button
+                            data-testid="password-toggle"
                           variant="ghost"
                           size="sm"
                           onClick={() => setShowPassword(!showPassword)}
