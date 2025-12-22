@@ -5,6 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## よく使うコマンド
 
 ### ビルドと実行
+
 ```bash
 # ビルド（依存サービス起動込み）
 cargo make build
@@ -23,6 +24,7 @@ cd frontend && npm run dev
 ```
 
 ### テスト
+
 ```bash
 # 全テスト実行（cargo-nextest使用）
 cargo make test
@@ -41,6 +43,7 @@ pnpm exec playwright test --debug
 ```
 
 ### リント・フォーマット
+
 ```bash
 # フォーマット
 cargo make fmt
@@ -53,6 +56,7 @@ cargo make clippy-ci
 ```
 
 ### データベース
+
 ```bash
 # マイグレーション実行
 cargo make migrate
@@ -71,6 +75,7 @@ cargo make initial-setup
 ```
 
 ### Docker Compose
+
 ```bash
 # PostgreSQL起動
 cargo make compose-up-db
@@ -89,6 +94,7 @@ cargo make logs
 ```
 
 ### ユーティリティ
+
 ```bash
 # パスワードハッシュ生成
 cargo make create-hash <password>
@@ -112,7 +118,7 @@ cargo make create-hash <password>
                ↓ 依存性注入
 ┌──────────────▼──────────────────────────┐
 │  registry                               │  DIコンテナ
-│  - AppRegistryImpl: 各リポジトリ管理    │  
+│  - AppRegistryImpl: 各リポジトリ管理    │
 │  - AppRegistryExt: 取得トレイト         │
 └──────────────┬──────────────────────────┘
                ↓ リポジトリ取得
@@ -133,6 +139,7 @@ cargo make create-hash <password>
 ```
 
 **重要な依存関係ルール:**
+
 - `kernel`は他のワークスペースに依存しない（`shared`のみ依存）
 - `adapter`は`kernel`のトレイトを実装する（依存性逆転の原則）
 - `api`は`kernel`のドメインモデルを使い、`registry`経由でリポジトリを取得
@@ -223,7 +230,7 @@ mod tests {
         let mut mock_repo = MockBookRepository::new();
         mock_repo.expect_create()
             .returning(|_| Ok(book));
-        
+
         // テスト実行
     }
 }

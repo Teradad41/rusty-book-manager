@@ -17,4 +17,4 @@ $ npm install
 $ npm run dev
 ```
 
-最後にブラウザで `localhost:3000` と入力すると、画面が表示されます。
+最後にブラウザで `localhost:3000` と入力すると、画面が表示されます！
